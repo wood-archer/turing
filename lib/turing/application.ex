@@ -11,7 +11,9 @@ defmodule Turing.Application do
       # Start the Ecto repository
       Turing.Repo,
       # Start the endpoint when the application starts
-      TuringWeb.Endpoint
+      TuringWeb.Endpoint,
+      # Guardian DB worker for sweeping out and cleaning outdated tokens
+      Guardian.DB.Token.SweeperServer
       # Starts a worker by calling: Turing.Worker.start_link(arg)
       # {Turing.Worker, arg},
     ]

@@ -26,6 +26,23 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :turing, Turing.Auth.Guardian,
+  issuer: "Turing",
+  verify_issuer: true
+
+config :guardian, Guardian.DB,
+  repo: Turing.Repo,
+  schema_name: "guardian_tokens",
+  # 24hx60min=1440 minutes (once a day)
+  sweep_interval: 1440
+
+config :cors_plug,
+  origin: "*",
+  max_age: 86400,
+  # allow_headers: ["accept", "content-type", "authorization"],
+  methods: ["GET", "POST"],
+  log: [rejected: :error, invalid: :warn, accepted: :debug]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

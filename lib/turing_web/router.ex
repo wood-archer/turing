@@ -9,6 +9,11 @@ defmodule TuringWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :graphql do
+    plug(:accepts, ["json"])
+    plug(TuringWeb.Context)
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -17,6 +22,19 @@ defmodule TuringWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+
+  if Mix.env() == :dev do
+    scope "/graphiql" do
+      forward("/", Absinthe.Plug.GraphiQL, schema: Turing.Graphql.Schema)
+    end
+  end
+
+  scope "/api" do
+    pipe_through(:graphql)
+
+    forward("/", Absinthe.Plug, schema: Turing.Graphql.Schema)
   end
 
   # Other scopes may use custom stacks.

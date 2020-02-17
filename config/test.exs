@@ -2,10 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :turing, Turing.Repo,
-  username: "postgres",
-  password: "postgres",
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DATA_DB_USER"),
+  password: System.get_env("DATA_DB_PASS"),
+  hostname: System.get_env("DATA_DB_HOST"),
   database: "turing_test",
-  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
@@ -16,3 +17,5 @@ config :turing, TuringWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+import_config "#{Mix.env()}.secret.exs"

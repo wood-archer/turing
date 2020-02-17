@@ -52,4 +52,14 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-import_config "prod.secret.exs"
+
+config :turing, Turing.Auth.Guardian, secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
+config :turing, Turing.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DATA_DB_USER"),
+  password: System.get_env("DATA_DB_PASS"),
+  hostname: System.get_env("DATA_DB_HOST"),
+  database: "turing_prod",
+  pool_size: 10
+

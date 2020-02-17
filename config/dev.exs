@@ -72,5 +72,7 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
+config :turing, Turing.Auth.Guardian, secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
