@@ -42,5 +42,6 @@ defmodule TuringWeb.Endpoint do
     key: "_turing_key",
     signing_salt: "0kohjbZ9"
 
+  plug CORSPlug
   plug TuringWeb.Router
 end
