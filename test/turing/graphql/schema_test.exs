@@ -163,6 +163,53 @@ defmodule Turing.Graphql.SchemaTest do
       assert last_name == "Wayne"
     end
 
+    test "raises error with invalid data", %{conn: conn, user: user} do
+      {:ok, jwt, _full_claims} = Turing.Auth.Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{jwt}")
+
+      response =
+        graphql_query(
+          conn,
+          query: """
+            mutation update_user {
+              update_user(
+                user: {
+                  first_name: "",
+                  last_name: "",
+                  credential: {
+                    email: ""
+                  }
+                }
+              ) {
+                id,
+                first_name
+                last_name
+                credential {
+                  email
+                }
+                inserted_at
+                updated_at
+              }
+            }
+          """
+      )
+
+      %{
+        "data" => _data,
+        "errors" => [
+          %{
+            "locations" => _locations,
+            "message" => message,
+            "path" => _path
+          }
+        ]
+      } = response
+      assert message == "first_name can't be blank, email can't be blank"
+    end
+
   end
 
   describe "sign_in" do

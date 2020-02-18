@@ -14,6 +14,10 @@ defmodule TuringWeb.Router do
     plug(TuringWeb.Context)
   end
 
+  pipeline :authorized do
+    plug Turing.Auth.Pipeline
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
