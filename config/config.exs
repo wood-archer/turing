@@ -16,7 +16,10 @@ config :turing, TuringWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Fad03a+diZpRXHZigyHiyJtBZb9TZiHdkEWqvhbER0bUmQWducxZ2voOXwwpxdhf",
   render_errors: [view: TuringWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Turing.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Turing.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [
+    signing_salt: "LIlgBfJ9j7xLJ6Almy982/ZydK/9y0vd"
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,

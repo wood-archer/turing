@@ -50,7 +50,8 @@ defmodule Turing.MixProject do
       {:cors_plug, "~> 2.0"},
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
-      {:absinthe_ecto, "~> 0.1.3"}
+      {:absinthe_ecto, "~> 0.1.3"},
+      {:phoenix_live_view, "~> 0.7.1"}
     ]
   end
 
