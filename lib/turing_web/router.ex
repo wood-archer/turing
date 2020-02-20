@@ -27,6 +27,7 @@ defmodule TuringWeb.Router do
     pipe_through :browser
 
     get "/", ChatController, :index
+    get "/sign_in", SessionController, :sign_in
   end
 
 

@@ -44,6 +44,7 @@ defmodule TuringWeb do
       import TuringWeb.Gettext
       alias TuringWeb.Router.Helpers, as: Routes
       import Phoenix.LiveView.Helpers
+      import TuringWeb.Live.FormHelper
     end
   end
 
