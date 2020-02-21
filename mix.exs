@@ -33,7 +33,7 @@ defmodule Turing.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.13", override: true},
+      {:phoenix, "~> 1.4.10"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.1"},
@@ -51,7 +51,7 @@ defmodule Turing.MixProject do
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:absinthe_ecto, "~> 0.1.3"},
-      {:phoenix_live_view, git: "https://github.com/phoenixframework/phoenix_live_view", branch: "master"}
+      {:phoenix_live_view, "~> 0.7.1"}
     ]
   end
 

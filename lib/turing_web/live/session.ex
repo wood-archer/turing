@@ -27,7 +27,6 @@ defmodule TuringWeb.Live.Session do
     {:noreply, assign(socket, changeset: changeset)}
   end
 
-  def handle_event("sign_in", %{"credential"=> params}, socket) do
-    
-  end
+  # def handle_event("sign_in", %{"credential"=> params}, socket) do
+  # end
 end

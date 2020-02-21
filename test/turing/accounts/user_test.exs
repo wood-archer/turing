@@ -15,11 +15,11 @@ defmodule Turing.Accounts.UserTest do
 
   describe "changeset" do
     test "creates a changeset with valid data" do
-      assert %Ecto.Changeset{valid?: true} = User.changeset(%User{}, @valid_attrs)
+      assert %Ecto.Changeset{valid?: true} = User.changeset_for_create(%User{}, @valid_attrs)
     end
 
     test "creates a changeset with invalid data" do
-      assert %Ecto.Changeset{valid?: false} = User.changeset(%User{}, @invalid_attrs)
+      assert %Ecto.Changeset{valid?: false} = User.changeset_for_create(%User{}, @invalid_attrs)
     end
   end
 end

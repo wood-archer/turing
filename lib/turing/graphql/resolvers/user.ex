@@ -14,7 +14,7 @@ defmodule Turing.Graphql.Resolvers.User do
     changeset =
       current_user
       |> Repo.preload(:credential)
-      |> User.changeset(user_params)
+      |> User.changeset_for_update(user_params)
 
     case Repo.update(changeset) do
       {:ok, user} ->

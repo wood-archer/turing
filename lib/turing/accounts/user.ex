@@ -24,6 +24,17 @@ defmodule Turing.Accounts.User do
     user
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> cast_assoc(:credential)
+  end
+
+  def changeset_for_create(%User{} = user, attrs) do
+    user
+    |> changeset(attrs)
+    |> validate_required(@required_fields)
+  end
+
+  def changeset_for_update(%User{} = user, attrs) do
+    user
+    |> changeset(attrs)
     |> validate_required(@required_fields)
   end
 end

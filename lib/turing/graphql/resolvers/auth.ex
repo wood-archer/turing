@@ -5,7 +5,7 @@ defmodule Turing.Graphql.Resolvers.Auth do
   alias TuringWeb.ErrorHelpers
 
   def sign_up(args, _info) do
-    changeset = User.changeset(%User{}, args)
+    changeset = User.changeset_for_create(%User{}, args)
 
     case Repo.insert(changeset) do
       {:ok, user} ->
@@ -42,7 +42,7 @@ defmodule Turing.Graphql.Resolvers.Auth do
   defp verify_pass(credential, password) do
     case credential do
       nil -> false
-      _ -> Bcrypt.verify_pass(password, credential.password)
+      _ -> Bcrypt.verify_pass(password, credential.password_hash)
     end
   end
 
