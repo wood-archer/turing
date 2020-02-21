@@ -47,10 +47,10 @@ defmodule Turing.Accounts.Credential do
   end
 
   @doc false
-  def changeset_for_validation(%Credential{} = credential, attrs) do
+  def changeset_for_session(%Credential{} = credential, attrs) do
     credential
     |> changeset(attrs)
-    |> validate_required([:password, :password_confirmation])
+    |> validate_required([:password])
   end
 
   defp downcase_email(%Ecto.Changeset{valid?: true} = changeset) do

@@ -21,8 +21,6 @@ defmodule TuringWeb.Live.Index do
     })
   end
 
-  # check if there are errors in the form and send them in real-time
-  # via socket
   def handle_event("validate", %{"message"=> params}, socket) do
     changeset =
       %Message{}

@@ -11,11 +11,8 @@
   <%= error_tag f, :email %>
 
   <%= label f, :password %>
-  <%= password_input f, :password, value: input_value(f, :password) %>
+  <%= live_view_password_input f, :password %>
   <%= error_tag f, :password %>
-
-  <%= password_input f, :password_confirmation, value: input_value(f, :password_confirmation) %>
-  <%= error_tag f, :password_confirmation %>
 
   <%# submit %>
   <div>
