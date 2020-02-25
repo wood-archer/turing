@@ -76,3 +76,5 @@ config :turing, Turing.Auth.Guardian, secret_key: System.get_env("GUARDIAN_SECRE
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+import_config "#{Mix.env()}.secret.exs"

@@ -16,7 +16,11 @@ defmodule TuringWeb.Router do
   end
 
   pipeline :authorized do
-    plug Turing.Auth.Pipeline
+    plug :fetch_session
+    plug Guardian.Plug.Pipeline, module: Turing.Auth.Guardian,
+      error_handler: Turing.Auth.ErrorHandler
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
   end
 
   pipeline :api do
@@ -26,14 +30,15 @@ defmodule TuringWeb.Router do
   scope "/", TuringWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
     get "/sign_in", SessionController, :sign_in
+    get "/sign_in_from_live_view", PageController, :sign_in_from_live_view
+    get "/chat", ChatController, :index
   end
 
   scope "/", TuringWeb do
     pipe_through [:browser, :authorized]
 
-    get "/chat", ChatController, :index
+    get "/", PageController, :index
   end
 
 

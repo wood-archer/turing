@@ -33,10 +33,14 @@ defmodule TuringWeb.Live.Session do
   def handle_event("sign_in", %{"credential"=> params}, socket) do
     case Auth.validate_credentials(params["email"], params["password"]) do
       {:ok, user} ->
+        # once live view will not keep state when the page refreshes, we pass the
+        # auth token via url so that we can verify the token in the next view.
+        {:ok, jwt, _full_claims} = Turing.Auth.Guardian.encode_and_sign(user)
+
         {:stop,
          socket
          |> put_flash(:info, "User signed in successfull!")
-         |> redirect(to: Routes.chat_path(TuringWeb.Endpoint, :index))
+         |> redirect(to: Routes.page_path(TuringWeb.Endpoint, :sign_in_from_live_view, jwt: jwt))
         }
 
       {:error, errors} ->

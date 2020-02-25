@@ -5,7 +5,7 @@ defmodule Turing.Auth.ErrorHandler do
 
     conn
     |> Phoenix.Controller.put_flash(:error, body)
-    |> Phoenix.Controller.redirect(to: TuringWeb.Router.Helpers.page_path(conn, :index))
+    |> Phoenix.Controller.redirect(to: TuringWeb.Router.Helpers.session_path(conn, :sign_in))
     |> Plug.Conn.halt()
   end
 
