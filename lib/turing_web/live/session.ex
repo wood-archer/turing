@@ -36,7 +36,7 @@ defmodule TuringWeb.Live.Session do
         # once live view will not keep state when the page refreshes, we sign
         # the user id and pass it via url so that we can verify the token in the
         # next view.
-        token = Phoenix.Token.sign(TuringWeb.Endpoint, secret_key_base, user.id)
+        token = Phoenix.Token.sign(TuringWeb.Endpoint, secret_key_base(), user.id)
 
         {:stop,
           socket
