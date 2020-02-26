@@ -33,14 +33,15 @@ defmodule TuringWeb.Live.Session do
   def handle_event("sign_in", %{"credential"=> params}, socket) do
     case Auth.validate_credentials(params["email"], params["password"]) do
       {:ok, user} ->
-        # once live view will not keep state when the page refreshes, we pass the
-        # auth token via url so that we can verify the token in the next view.
-        {:ok, jwt, _full_claims} = Turing.Auth.Guardian.encode_and_sign(user)
+        # once live view will not keep state when the page refreshes, we sign
+        # the user id and pass it via url so that we can verify the token in the
+        # next view.
+        token = Phoenix.Token.sign(TuringWeb.Endpoint, secret_key_base, user.id)
 
         {:stop,
-         socket
-         |> put_flash(:info, "User signed in successfull!")
-         |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in, jwt: jwt))
+          socket
+          |> put_flash(:info, "User signed in successfull!")
+          |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in, token: token))
         }
 
       {:error, errors} ->
@@ -51,5 +52,9 @@ defmodule TuringWeb.Live.Session do
         {:noreply, assign(socket, changeset: Map.put(changeset, :errors, errors))}
 
     end
+  end
+
+  defp secret_key_base do
+    Application.get_env(:turing, TuringWeb.Endpoint)[:secret_key_base]
   end
 end

@@ -1,12 +1,16 @@
 defmodule TuringWeb.SessionController do
   use TuringWeb, :controller
 
+  alias Turing.Repo
   alias Turing.Accounts.User
   alias Turing.Auth.Guardian
 
-  def sign_in(conn, %{"jwt"=> jwt}) do
-    case Guardian.resource_from_token(jwt) do
-      {:ok, %User{} = user, _claims} ->
+  def sign_in(conn, %{"token"=> token}) do
+    IO.inspect token
+    case Phoenix.Token.verify(TuringWeb.Endpoint, secret_key_base, token, max_age: 86400) do
+      {:ok, user_id} ->
+        user = Repo.get(User, user_id)
+
         conn
         |> Guardian.Plug.sign_in(user)
         |> redirect(to: Routes.page_path(conn, :index))
@@ -24,6 +28,10 @@ defmodule TuringWeb.SessionController do
       TuringWeb.Live.Session,
       session: %{}
     )
+  end
+
+  defp secret_key_base do
+    Application.get_env(:turing, TuringWeb.Endpoint)[:secret_key_base]
   end
 
 end
