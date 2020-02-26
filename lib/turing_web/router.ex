@@ -31,7 +31,6 @@ defmodule TuringWeb.Router do
     pipe_through :browser
 
     get "/sign_in", SessionController, :sign_in
-    get "/sign_in_from_live_view", PageController, :sign_in_from_live_view
     get "/chat", ChatController, :index
   end
 

@@ -40,7 +40,7 @@ defmodule TuringWeb.Live.Session do
         {:stop,
          socket
          |> put_flash(:info, "User signed in successfull!")
-         |> redirect(to: Routes.page_path(TuringWeb.Endpoint, :sign_in_from_live_view, jwt: jwt))
+         |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in, jwt: jwt))
         }
 
       {:error, errors} ->
