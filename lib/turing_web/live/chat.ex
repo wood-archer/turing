@@ -1,4 +1,4 @@
-defmodule TuringWeb.Live.Index do
+defmodule TuringWeb.Live.Chat do
   use Phoenix.LiveView
 
   alias Turing.Chat
