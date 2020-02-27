@@ -1,4 +1,4 @@
-defmodule TuringWeb.Live.Session do
+defmodule TuringWeb.Live.SignIn do
   use Phoenix.LiveView
 
   alias Turing.{Accounts, Accounts.Credential}
@@ -11,7 +11,7 @@ defmodule TuringWeb.Live.Session do
   end
 
   def render(assigns) do
-    TuringWeb.SessionView.render("index.html", assigns)
+    TuringWeb.SessionView.render("new.html", assigns)
   end
 
   def fetch(socket) do

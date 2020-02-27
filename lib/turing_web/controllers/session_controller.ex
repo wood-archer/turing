@@ -24,7 +24,7 @@ defmodule TuringWeb.SessionController do
   def sign_in(conn, _params) do
     Phoenix.LiveView.Controller.live_render(
       conn,
-      TuringWeb.Live.Session,
+      TuringWeb.Live.SignIn,
       session: %{}
     )
   end

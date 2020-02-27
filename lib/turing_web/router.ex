@@ -30,6 +30,7 @@ defmodule TuringWeb.Router do
   scope "/", TuringWeb do
     pipe_through :browser
 
+    get "/", UserController, :sign_up
     get "/sign_in", SessionController, :sign_in
     get "/chat", ChatController, :index
   end
