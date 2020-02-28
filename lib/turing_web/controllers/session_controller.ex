@@ -29,6 +29,13 @@ defmodule TuringWeb.SessionController do
     )
   end
 
+  def sign_out(conn, _params) do
+    conn
+    |> put_flash(:info, "We'll miss you!")
+    |> Guardian.Plug.sign_out()
+    |> redirect(to: Routes.session_path(conn, :sign_in))
+  end
+
   defp secret_key_base do
     Application.get_env(:turing, TuringWeb.Endpoint)[:secret_key_base]
   end

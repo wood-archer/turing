@@ -38,7 +38,8 @@ defmodule TuringWeb.Router do
   scope "/", TuringWeb do
     pipe_through [:browser, :authorized]
 
-    get "/", PageController, :index
+    get "/me", PageController, :index
+    delete "/sign_in", SessionController, :sign_out
   end
 
 
