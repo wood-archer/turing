@@ -20,6 +20,8 @@ defmodule TuringWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       alias TuringWeb.Router.Helpers, as: Routes
+      alias Turing.Repo
+      import Turing.GraphqlHelper
 
       # The default endpoint for testing
       @endpoint TuringWeb.Endpoint

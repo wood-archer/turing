@@ -24,6 +24,7 @@ defmodule TuringWeb do
       import Plug.Conn
       import TuringWeb.Gettext
       alias TuringWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Controller
     end
   end
 
@@ -42,6 +43,8 @@ defmodule TuringWeb do
       import TuringWeb.ErrorHelpers
       import TuringWeb.Gettext
       alias TuringWeb.Router.Helpers, as: Routes
+      import Phoenix.LiveView.Helpers
+      import TuringWeb.Live.FormHelper
     end
   end
 
@@ -50,6 +53,7 @@ defmodule TuringWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 

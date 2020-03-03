@@ -16,7 +16,12 @@ config :turing, TuringWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Fad03a+diZpRXHZigyHiyJtBZb9TZiHdkEWqvhbER0bUmQWducxZ2voOXwwpxdhf",
   render_errors: [view: TuringWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Turing.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Turing.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [
+    signing_salt: "LIlgBfJ9j7xLJ6Almy982/ZydK/9y0vd"
+  ]
+
+config :phoenix, :template_engines, leex: Phoenix.LiveView.Engine
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -25,6 +30,23 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :turing, Turing.Auth.Guardian,
+  issuer: "Turing",
+  verify_issuer: true
+
+config :guardian, Guardian.DB,
+  repo: Turing.Repo,
+  schema_name: "guardian_tokens",
+  # 24hx60min=1440 minutes (once a day)
+  sweep_interval: 1440
+
+config :cors_plug,
+  origin: "*",
+  max_age: 86400,
+  # allow_headers: ["accept", "content-type", "authorization"],
+  methods: ["GET", "POST"],
+  log: [rejected: :error, invalid: :warn, accepted: :debug]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
