@@ -33,6 +33,7 @@ defmodule Turing.Accounts.Credential do
     |> foreign_key_constraint(:user_id)
     |> downcase_email()
     |> unique_constraint(:email)
+    |> unique_constraint(:username)
   end
 
   @doc false
