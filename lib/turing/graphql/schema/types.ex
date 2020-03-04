@@ -16,6 +16,7 @@ defmodule Turing.Graphql.Schema.Types do
   object(:credential) do
     field(:id, :string)
     field(:email, :string)
+    field(:username, :string)
     field(:password, :string)
     field(:password_confirmation, :string)
     field(:user_id, :string)

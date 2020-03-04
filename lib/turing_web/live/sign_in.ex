@@ -3,7 +3,6 @@ defmodule TuringWeb.Live.SignIn do
 
   alias Turing.{Accounts, Accounts.Credential}
   alias Turing.Auth
-  alias Turing.Auth.Guardian
   alias TuringWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do

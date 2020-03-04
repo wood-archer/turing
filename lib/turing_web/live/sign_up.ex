@@ -31,7 +31,7 @@ defmodule TuringWeb.Live.SignUp do
 
   def handle_event("sign_up", %{"user"=> params}, socket) do
     case Accounts.create_user(params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         {:stop,
           socket
           |> put_flash(:info, "User signed up successfull!")

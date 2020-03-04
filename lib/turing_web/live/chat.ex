@@ -4,7 +4,7 @@ defmodule TuringWeb.Live.Chat do
   alias Turing.Chat
   alias Turing.Chat.Message
 
-  def mount(_session, socket) do
+  def mount(_paramms, _session, socket) do
     if connected?(socket), do: Chat.subscribe()
     {:ok, fetch(socket)}
   end

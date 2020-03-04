@@ -9,6 +9,7 @@ defmodule Turing.Accounts.Credential do
   @foreign_key_type :binary_id
   schema "credentials" do
     field(:email, :string)
+    field(:username, :string)
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
     field(:password_confirmation, :string, virtual: true)
@@ -18,11 +19,12 @@ defmodule Turing.Accounts.Credential do
     timestamps()
   end
 
+  @optional_fields ~w(username)a
   @required_fields ~w(email password password_confirmation user_id)a
 
   def changeset(%Credential{} = credential, attrs) do
     credential
-    |> cast(attrs, @required_fields)
+    |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_format(:email, ~r/@/)
     |> validate_required([:email])
     |> validate_length(:password, min: 6, max: 100)
