@@ -16,4 +16,10 @@ defmodule Turing.Accounts do
     |> User.changeset_for_create(attrs)
     |> Repo.insert()
   end
+
+  def create_credential(attrs \\ %{}) do
+    %Credential{}
+    |> Credential.changeset_for_create(attrs)
+    |> Repo.insert()
+  end
 end
