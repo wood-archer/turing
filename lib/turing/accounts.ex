@@ -11,6 +11,8 @@ defmodule Turing.Accounts do
     User.changeset_for_create(user, attrs)
   end
 
+  def get_user!(id), do: Repo.get(User, id)
+
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset_for_create(attrs)

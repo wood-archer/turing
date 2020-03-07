@@ -18,6 +18,7 @@ alias Turing.{Accounts, Chat}
 
 {:ok, %Credential{}} = Accounts.create_credential(%{
   email: "john@doe.com",
+  username: "john.doe",
   password: "123qweasd",
   password_confirmation: "123qweasd",
   user_id: u1_id
@@ -27,6 +28,7 @@ alias Turing.{Accounts, Chat}
 
 {:ok, %Credential{}} = Accounts.create_credential(%{
   email: "jane@doe.com",
+  username: "jane.doe",
   password: "123qweasd",
   password_confirmation: "123qweasd",
   user_id: u2_id

@@ -39,6 +39,7 @@ defmodule TuringWeb.Router do
     pipe_through [:browser, :authorized]
 
     get "/me", PageController, :index
+    live "/chat/conversations/:conversation_id/users/:user_id", Live.Chat.Conversation
     delete "/sign_in", SessionController, :sign_out
   end
 
