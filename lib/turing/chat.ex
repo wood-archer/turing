@@ -7,6 +7,11 @@ defmodule Turing.Chat do
   alias Turing.Repo
 
   alias Turing.Chat.Conversation
+  alias Turing.Chat.SeenMessage
+  alias Turing.Chat.Message
+  alias Turing.Chat.ConversationMember
+  alias Turing.Chat.Emoji
+  alias Turing.Chat.MessageReaction
 
   @doc """
   Returns the list of chat_conversations.
@@ -102,7 +107,6 @@ defmodule Turing.Chat do
     Conversation.changeset(conversation, %{})
   end
 
-  alias Turing.Chat.ConversationMember
 
   @doc """
   Returns the list of chat_conversation_members.
@@ -198,8 +202,6 @@ defmodule Turing.Chat do
     ConversationMember.changeset(conversation_member, %{})
   end
 
-  alias Turing.Chat.Message
-
   @doc """
   Returns the list of chat_messages.
 
@@ -293,8 +295,6 @@ defmodule Turing.Chat do
   def change_message(%Message{} = message) do
     Message.changeset(message, %{})
   end
-
-  alias Turing.Chat.Emoji
 
   @doc """
   Returns the list of chat_emojis.
@@ -390,8 +390,6 @@ defmodule Turing.Chat do
     Emoji.changeset(emoji, %{})
   end
 
-  alias Turing.Chat.MessageReaction
-
   @doc """
   Returns the list of chat_message_reactions.
 
@@ -485,8 +483,6 @@ defmodule Turing.Chat do
   def change_message_reaction(%MessageReaction{} = message_reaction) do
     MessageReaction.changeset(message_reaction, %{})
   end
-
-  alias Turing.Chat.SeenMessage
 
   @doc """
   Returns the list of chat_seen_messages.
