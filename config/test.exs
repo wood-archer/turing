@@ -25,4 +25,6 @@ config :logger, level: :warn
 config :comeonin, :bcrypt_log_rounds, 4
 config :comeonin, :pbkdf2_rounds, 1
 
-import_config "#{Mix.env()}.secret.exs"
+unless System.get_env("GITHUB_ACTIONS") do
+  import_config "#{Mix.env()}.secret.exs"
+end
