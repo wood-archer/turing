@@ -4,7 +4,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
 
   alias Turing.{Accounts, Chat, Repo}
 
-  def mount(_assigns, socket) do
+  def mount(_params, _assigns, socket) do
     {:ok, socket}
   end
 
@@ -35,25 +35,25 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   def handle_event(
-    "send_message",
-    %{
-      "message" => %{
-        "content" => content
-      }
-    },
-    %{
-      assigns: %{
-        conversation_id: conversation_id,
-        user_id: user_id,
-        user: user
-      }
-    } = socket
-  ) do
+        "send_message",
+        %{
+          "message" => %{
+            "content" => content
+          }
+        },
+        %{
+          assigns: %{
+            conversation_id: conversation_id,
+            user_id: user_id,
+            user: user
+          }
+        } = socket
+      ) do
     case Chat.create_message(%{
-      conversation_id: conversation_id,
-      user_id: user_id,
-      content: content
-    }) do
+           conversation_id: conversation_id,
+           user_id: user_id,
+           content: content
+         }) do
       {:ok, new_message} ->
         new_message = %{new_message | user: user}
 
@@ -66,28 +66,26 @@ defmodule TuringWeb.Live.Chat.Conversation do
 
       {:error, _} ->
         {:noreply, socket}
-
     end
 
     {:noreply, socket}
   end
 
   def handle_params(
-    %{
-      "conversation_id" => conversation_id,
-      "user_id" => user_id
-    },
-    _uri,
-    socket
-  ) do
+        %{
+          "conversation_id" => conversation_id,
+          "user_id" => user_id
+        },
+        _uri,
+        socket
+      ) do
     TuringWeb.Endpoint.subscribe("conversation_#{conversation_id}")
 
     {:noreply,
-      socket
-      |> assign(:user_id, user_id)
-      |> assign(:conversation_id, conversation_id)
-      |> assign_records()
-    }
+     socket
+     |> assign(:user_id, user_id)
+     |> assign(:conversation_id, conversation_id)
+     |> assign_records()}
   end
 
   def handle_info(%{event: "new_message", payload: new_message}, socket) do
@@ -97,13 +95,13 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   defp assign_records(
-    %{
-      assigns: %{
-        user_id: user_id,
-        conversation_id: conversation_id
-      }
-    } = socket
-  ) do
+         %{
+           assigns: %{
+             user_id: user_id,
+             conversation_id: conversation_id
+           }
+         } = socket
+       ) do
     user = Accounts.get_user!(user_id)
 
     conversation =

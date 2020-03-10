@@ -60,7 +60,8 @@ defmodule Turing.Accounts.Credential do
     update_change(changeset, :email, &String.downcase/1)
   end
 
-  defp downcase_email(%Ecto.Changeset{valid?: true, changes: %{email: nil}} = changeset), do: changeset
+  defp downcase_email(%Ecto.Changeset{valid?: true, changes: %{email: nil}} = changeset),
+    do: changeset
 
   defp downcase_email(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 
@@ -68,7 +69,8 @@ defmodule Turing.Accounts.Credential do
     put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(password))
   end
 
-  defp hash_password(%Ecto.Changeset{valid?: true, changes: %{email: _email}} = changeset), do: changeset
+  defp hash_password(%Ecto.Changeset{valid?: true, changes: %{email: _email}} = changeset),
+    do: changeset
 
   defp hash_password(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 end

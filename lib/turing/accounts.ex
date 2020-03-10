@@ -1,5 +1,4 @@
 defmodule Turing.Accounts do
-
   alias Turing.Accounts.{Credential, User}
   alias Turing.Repo
 
@@ -24,4 +23,6 @@ defmodule Turing.Accounts do
     |> Credential.changeset_for_create(attrs)
     |> Repo.insert()
   end
+
+  def list_users, do: Repo.all(User)
 end

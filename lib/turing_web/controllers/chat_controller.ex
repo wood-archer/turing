@@ -8,5 +8,4 @@ defmodule TuringWeb.ChatController do
       session: %{}
     )
   end
-
 end

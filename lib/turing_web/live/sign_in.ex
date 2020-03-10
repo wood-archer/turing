@@ -19,17 +19,16 @@ defmodule TuringWeb.Live.SignIn do
     })
   end
 
-  def handle_event("validate", %{"credential"=> params}, socket) do
+  def handle_event("validate", %{"credential" => params}, socket) do
     changeset =
       %Credential{}
       |> Accounts.change_credential_session(params)
       |> Map.put(:action, :insert)
 
-
     {:noreply, assign(socket, changeset: changeset)}
   end
 
-  def handle_event("sign_in", %{"credential"=> params}, socket) do
+  def handle_event("sign_in", %{"credential" => params}, socket) do
     case Auth.validate_credentials(params["email"], params["password"]) do
       {:ok, user} ->
         # once live view will not keep state when the page refreshes, we sign
@@ -38,10 +37,9 @@ defmodule TuringWeb.Live.SignIn do
         token = Phoenix.Token.sign(TuringWeb.Endpoint, secret_key_base(), user.id)
 
         {:stop,
-          socket
-          |> put_flash(:info, "User signed in successfull!")
-          |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in, token: token))
-        }
+         socket
+         |> put_flash(:info, "User signed in successfull!")
+         |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in, token: token))}
 
       {:error, errors} ->
         %Phoenix.LiveView.Socket{
@@ -49,7 +47,6 @@ defmodule TuringWeb.Live.SignIn do
         } = socket
 
         {:noreply, assign(socket, changeset: Map.put(changeset, :errors, errors))}
-
     end
   end
 

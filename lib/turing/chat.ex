@@ -107,7 +107,6 @@ defmodule Turing.Chat do
     Conversation.changeset(conversation, %{})
   end
 
-
   @doc """
   Returns the list of chat_conversation_members.
 

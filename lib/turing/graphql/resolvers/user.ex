@@ -6,6 +6,7 @@ defmodule Turing.Graphql.Resolvers.User do
   def current(_, %{context: %{current_user: current_user}}) do
     {:ok, current_user}
   end
+
   def current(_, _) do
     {:error, "Access denied"}
   end
@@ -22,15 +23,15 @@ defmodule Turing.Graphql.Resolvers.User do
 
       {:error, changeset} ->
         errors = changeset.errors ++ changeset.changes.credential.errors
+
         {
           :error,
           ErrorHelpers.handle_changeset_errors(errors)
         }
-
     end
   end
+
   def update(_, _) do
     {:error, "Access denied"}
   end
-
 end

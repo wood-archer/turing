@@ -17,8 +17,11 @@ defmodule TuringWeb.Router do
 
   pipeline :authorized do
     plug :fetch_session
-    plug Guardian.Plug.Pipeline, module: Turing.Auth.Guardian,
+
+    plug Guardian.Plug.Pipeline,
+      module: Turing.Auth.Guardian,
       error_handler: Turing.Auth.ErrorHandler
+
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
   end
@@ -39,10 +42,11 @@ defmodule TuringWeb.Router do
     pipe_through [:browser, :authorized]
 
     get "/me", PageController, :index
+
     live "/chat/conversations/:conversation_id/users/:user_id", Live.Chat.Conversation
+
     delete "/sign_in", SessionController, :sign_out
   end
-
 
   if Mix.env() == :dev do
     scope "/graphiql" do

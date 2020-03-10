@@ -1,5 +1,4 @@
 defmodule Turing.Auth.ErrorHandler do
-
   def auth_error(conn, {:no_resource_found, :no_resource_found}, _opts) do
     redirect_to_signin_page("You must be signed in to access that page.", conn)
   end
@@ -16,5 +15,4 @@ defmodule Turing.Auth.ErrorHandler do
     |> Phoenix.Controller.redirect(to: TuringWeb.Router.Helpers.session_path(conn, :sign_in))
     |> Plug.Conn.halt()
   end
-
 end

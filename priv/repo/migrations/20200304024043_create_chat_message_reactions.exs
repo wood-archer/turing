@@ -4,7 +4,10 @@ defmodule Turing.Repo.Migrations.CreateChatMessageReactions do
   def change do
     create table(:chat_message_reactions, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :message_id, references(:chat_messages, on_delete: :nothing, type: :binary_id), null: false
+
+      add :message_id, references(:chat_messages, on_delete: :nothing, type: :binary_id),
+        null: false
+
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id), null: false
       add :emoji_id, references(:chat_emojis, on_delete: :nothing, type: :binary_id), null: false
 

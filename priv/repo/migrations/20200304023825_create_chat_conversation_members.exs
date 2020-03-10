@@ -20,8 +20,8 @@ defmodule Turing.Repo.Migrations.CreateChatConversationMembers do
     # to true, which means that only one conversation member record with a given
     # conversation_id will ever be the conversation's owner.
     create unique_index(:chat_conversation_members, [:conversation_id],
-       where: "owner = TRUE",
-       name: "chat_conversation_members_owner"
-     )
+             where: "owner = TRUE",
+             name: "chat_conversation_members_owner"
+           )
   end
 end

@@ -8,6 +8,5 @@ defmodule Turing.Repo.Migrations.CreateChatConversations do
 
       timestamps()
     end
-
   end
 end

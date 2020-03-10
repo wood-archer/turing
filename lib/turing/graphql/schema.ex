@@ -32,7 +32,6 @@ defmodule Turing.Graphql.Schema do
   end
 
   mutation do
-
     @desc "Sign up"
     field(:signup, type: :user) do
       arg(:first_name, non_null(:string))
@@ -60,7 +59,5 @@ defmodule Turing.Graphql.Schema do
 
       resolve(&Turing.Graphql.Resolvers.User.update/2)
     end
-
   end
-
 end

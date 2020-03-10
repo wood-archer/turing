@@ -40,7 +40,10 @@ defmodule Turing.ChatTest do
 
     test "update_conversation/2 with valid data updates the conversation" do
       conversation = conversation_fixture()
-      assert {:ok, %Conversation{} = conversation} = Chat.update_conversation(conversation, @update_attrs)
+
+      assert {:ok, %Conversation{} = conversation} =
+               Chat.update_conversation(conversation, @update_attrs)
+
       assert conversation.title == "some updated title"
     end
 
@@ -89,7 +92,9 @@ defmodule Turing.ChatTest do
     end
 
     test "create_conversation_member/1 with valid data creates a conversation_member" do
-      assert {:ok, %ConversationMember{} = conversation_member} = Chat.create_conversation_member(@valid_attrs)
+      assert {:ok, %ConversationMember{} = conversation_member} =
+               Chat.create_conversation_member(@valid_attrs)
+
       assert conversation_member.owner == true
     end
 
@@ -99,20 +104,29 @@ defmodule Turing.ChatTest do
 
     test "update_conversation_member/2 with valid data updates the conversation_member" do
       conversation_member = conversation_member_fixture()
-      assert {:ok, %ConversationMember{} = conversation_member} = Chat.update_conversation_member(conversation_member, @update_attrs)
+
+      assert {:ok, %ConversationMember{} = conversation_member} =
+               Chat.update_conversation_member(conversation_member, @update_attrs)
+
       assert conversation_member.owner == false
     end
 
     test "update_conversation_member/2 with invalid data returns error changeset" do
       conversation_member = conversation_member_fixture()
-      assert {:error, %Ecto.Changeset{}} = Chat.update_conversation_member(conversation_member, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Chat.update_conversation_member(conversation_member, @invalid_attrs)
+
       assert conversation_member == Chat.get_conversation_member!(conversation_member.id)
     end
 
     test "delete_conversation_member/1 deletes the conversation_member" do
       conversation_member = conversation_member_fixture()
       assert {:ok, %ConversationMember{}} = Chat.delete_conversation_member(conversation_member)
-      assert_raise Ecto.NoResultsError, fn -> Chat.get_conversation_member!(conversation_member.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Chat.get_conversation_member!(conversation_member.id)
+      end
     end
 
     test "change_conversation_member/1 returns a conversation_member changeset" do
@@ -268,7 +282,8 @@ defmodule Turing.ChatTest do
     end
 
     test "create_message_reaction/1 with valid data creates a message_reaction" do
-      assert {:ok, %MessageReaction{} = message_reaction} = Chat.create_message_reaction(@valid_attrs)
+      assert {:ok, %MessageReaction{} = message_reaction} =
+               Chat.create_message_reaction(@valid_attrs)
     end
 
     test "create_message_reaction/1 with invalid data returns error changeset" do
@@ -277,12 +292,17 @@ defmodule Turing.ChatTest do
 
     test "update_message_reaction/2 with valid data updates the message_reaction" do
       message_reaction = message_reaction_fixture()
-      assert {:ok, %MessageReaction{} = message_reaction} = Chat.update_message_reaction(message_reaction, @update_attrs)
+
+      assert {:ok, %MessageReaction{} = message_reaction} =
+               Chat.update_message_reaction(message_reaction, @update_attrs)
     end
 
     test "update_message_reaction/2 with invalid data returns error changeset" do
       message_reaction = message_reaction_fixture()
-      assert {:error, %Ecto.Changeset{}} = Chat.update_message_reaction(message_reaction, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Chat.update_message_reaction(message_reaction, @invalid_attrs)
+
       assert message_reaction == Chat.get_message_reaction!(message_reaction.id)
     end
 
@@ -334,7 +354,9 @@ defmodule Turing.ChatTest do
 
     test "update_seen_message/2 with valid data updates the seen_message" do
       seen_message = seen_message_fixture()
-      assert {:ok, %SeenMessage{} = seen_message} = Chat.update_seen_message(seen_message, @update_attrs)
+
+      assert {:ok, %SeenMessage{} = seen_message} =
+               Chat.update_seen_message(seen_message, @update_attrs)
     end
 
     test "update_seen_message/2 with invalid data returns error changeset" do

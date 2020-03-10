@@ -9,6 +9,5 @@ defmodule Turing.Repo.Migrations.CreateChatEmojis do
 
       timestamps()
     end
-
   end
 end

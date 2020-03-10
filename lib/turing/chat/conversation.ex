@@ -9,8 +9,9 @@ defmodule Turing.Chat.Conversation do
   schema "chat_conversations" do
     field :title, :string
 
-    has_many :conversation_members, ConversationMember
-    has_many :messages, Message
+    has_many(:conversation_members, ConversationMember, on_replace: :delete)
+    has_many(:users, through: [:conversation_members, :user])
+    has_many(:messages, Message)
 
     timestamps()
   end
@@ -19,6 +20,6 @@ defmodule Turing.Chat.Conversation do
   def changeset(conversation, attrs) do
     conversation
     |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast_assoc(:conversation_members)
   end
 end
