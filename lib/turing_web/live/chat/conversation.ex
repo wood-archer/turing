@@ -1,4 +1,6 @@
 defmodule TuringWeb.Live.Chat.Conversation do
+  require Logger
+
   use Phoenix.LiveView
   use Phoenix.HTML
 
@@ -64,11 +66,9 @@ defmodule TuringWeb.Live.Chat.Conversation do
           new_message
         )
 
-      {:error, _} ->
-        {:noreply, socket}
+      {:error, err} ->
+        Logger.error(inspect(err))
     end
-
-    {:noreply, socket}
   end
 
   def handle_params(
