@@ -1,26 +1,23 @@
 defmodule Turing.Graphql.SchemaTest do
-
   use TuringWeb.ConnCase
 
   alias Turing.Accounts.{Credential, User}
 
   setup do
     {:ok, user} = Repo.insert(%User{first_name: "Jon Snow"})
+
     %Credential{}
-    |> Credential.changeset(
-      %{
-        email: "john.snow@got.com",
-        password: "d3vP455",
-        user_id: user.id
-      }
-    )
+    |> Credential.changeset(%{
+      email: "john.snow@got.com",
+      password: "d3vP455",
+      user_id: user.id
+    })
     |> Repo.insert()
 
     {:ok, %{user: user}}
   end
 
   describe "sign_up" do
-
     test "creates an account with valid data", %{conn: conn} do
       response =
         graphql_query(
@@ -46,22 +43,23 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
       assert %{
-        "data" => %{
-          "signup" => %{
-            "credential" => %{
-              "email" => email,
-            },
-            "first_name" => first_name,
-            "id" => _id,
-            "inserted_at" => _inserted_at,
-            "last_name" => _last_name,
-            "updated_at" => _updated_at
-          }
-        }
-      } = response
+               "data" => %{
+                 "signup" => %{
+                   "credential" => %{
+                     "email" => email
+                   },
+                   "first_name" => first_name,
+                   "id" => _id,
+                   "inserted_at" => _inserted_at,
+                   "last_name" => _last_name,
+                   "updated_at" => _updated_at
+                 }
+               }
+             } = response
+
       assert first_name == "John"
       assert email == "john.snow@got.net"
     end
@@ -91,25 +89,24 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
       assert %{
-        "data" => _data,
-        "errors" => [
-          %{
-            "locations" => _locations,
-            "message" => message,
-            "path" => _path
-          }
-        ]
-      } = response
+               "data" => _data,
+               "errors" => [
+                 %{
+                   "locations" => _locations,
+                   "message" => message,
+                   "path" => _path
+                 }
+               ]
+             } = response
+
       assert message == "email has already been taken"
     end
-
   end
 
   describe "update_user" do
-
     test "updates current user's account with valid data", %{conn: conn, user: user} do
       {:ok, jwt, _full_claims} = Turing.Auth.Guardian.encode_and_sign(user)
 
@@ -142,7 +139,7 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
       %{
         "data" => %{
@@ -158,6 +155,7 @@ defmodule Turing.Graphql.SchemaTest do
           }
         }
       } = response
+
       assert email == "bruce@waynetech.com"
       assert first_name == "Bruce"
       assert last_name == "Wayne"
@@ -195,7 +193,7 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
       %{
         "data" => _data,
@@ -207,13 +205,12 @@ defmodule Turing.Graphql.SchemaTest do
           }
         ]
       } = response
+
       assert message == "first_name can't be blank, email can't be blank"
     end
-
   end
 
   describe "sign_in" do
-
     test "creates a session with valid data", %{conn: conn} do
       response =
         graphql_query(
@@ -228,15 +225,15 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
-     assert %{
-        "data" => %{
-          "login" => %{
-            "token" => _token
-          }
-        }
-      } = response
+      assert %{
+               "data" => %{
+                 "login" => %{
+                   "token" => _token
+                 }
+               }
+             } = response
     end
 
     test "raises error with invalid data", %{conn: conn} do
@@ -253,25 +250,24 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
-     assert %{
-        "data" => %{"login" => _login},
-        "errors" => [
-          %{
-            "locations" => _locations,
-            "message" => message,
-            "path" => _path
-          }
-        ]
-      } = response
+      assert %{
+               "data" => %{"login" => _login},
+               "errors" => [
+                 %{
+                   "locations" => _locations,
+                   "message" => message,
+                   "path" => _path
+                 }
+               ]
+             } = response
+
       assert message == "Invalid credentials"
     end
-
   end
 
   describe "sign_out" do
-
     test "revokes user token", %{conn: conn, user: user} do
       {:ok, jwt, _full_claims} = Turing.Auth.Guardian.encode_and_sign(user)
 
@@ -289,10 +285,9 @@ defmodule Turing.Graphql.SchemaTest do
               }
             }
           """
-      )
+        )
 
       assert response == %{"data" => %{"logout" => %{"message" => "You have been logged out!"}}}
     end
-
   end
 end

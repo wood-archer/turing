@@ -5,6 +5,7 @@ defmodule Turing.Accounts.User do
 
   alias __MODULE__
   alias Turing.Accounts.Credential
+  alias Turing.Chat.ConversationMember
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -13,6 +14,9 @@ defmodule Turing.Accounts.User do
     field(:last_name, :string)
 
     has_one(:credential, Credential, on_replace: :update)
+
+    has_many(:conversation_members, ConversationMember)
+    has_many(:conversations, through: [:conversation_members, :conversation])
 
     timestamps()
   end

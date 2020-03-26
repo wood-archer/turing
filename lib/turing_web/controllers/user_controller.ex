@@ -8,5 +8,4 @@ defmodule TuringWeb.UserController do
       session: %{}
     )
   end
-
 end

@@ -23,9 +23,7 @@ defmodule Turing.Auth do
 
           _ ->
             {:error, [password: {"Invalid password.", []}]}
-
         end
-
     end
   end
 

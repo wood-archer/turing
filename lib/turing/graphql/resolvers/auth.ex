@@ -1,5 +1,4 @@
 defmodule Turing.Graphql.Resolvers.Auth do
-
   alias Turing.Repo
   alias Turing.Accounts.{Credential, User}
   alias TuringWeb.ErrorHelpers
@@ -13,6 +12,7 @@ defmodule Turing.Graphql.Resolvers.Auth do
 
       {:error, changeset} ->
         errors = changeset.errors ++ changeset.changes.credential.errors
+
         {
           :error,
           ErrorHelpers.handle_changeset_errors(errors)
@@ -37,7 +37,8 @@ defmodule Turing.Graphql.Resolvers.Auth do
       {:ok, %{message: "You have been logged out!"}}
     end
   end
-  def sign_out(_, _), do:  {:error, "Access denied"}
+
+  def sign_out(_, _), do: {:error, "Access denied"}
 
   defp verify_pass(credential, password) do
     case credential do

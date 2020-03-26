@@ -5,7 +5,7 @@ defmodule TuringWeb.SessionController do
   alias Turing.Accounts.User
   alias Turing.Auth.Guardian
 
-  def sign_in(conn, %{"token"=> token}) do
+  def sign_in(conn, %{"token" => token}) do
     case Phoenix.Token.verify(TuringWeb.Endpoint, secret_key_base(), token, max_age: 86400) do
       {:ok, user_id} ->
         user = Repo.get(User, user_id)
@@ -17,7 +17,6 @@ defmodule TuringWeb.SessionController do
       _ ->
         conn
         |> redirect(to: Routes.session_path(conn, :sign_in))
-
     end
   end
 
@@ -39,5 +38,4 @@ defmodule TuringWeb.SessionController do
   defp secret_key_base do
     Application.get_env(:turing, TuringWeb.Endpoint)[:secret_key_base]
   end
-
 end

@@ -62,4 +62,3 @@ config :turing, Turing.Repo,
   hostname: System.get_env("DATA_DB_HOST"),
   database: "turing_prod",
   pool_size: 10
-

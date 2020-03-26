@@ -14,7 +14,6 @@ defmodule TuringWeb.Context do
 
       _ ->
         conn
-
     end
   end
 
@@ -22,10 +21,8 @@ defmodule TuringWeb.Context do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
          {:ok, current_user} <- authorize(token) do
       {:ok, %{current_user: current_user, metadata: %{token: token}}}
-
     else
       _ -> %{}
-
     end
   end
 

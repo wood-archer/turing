@@ -26,12 +26,12 @@ defmodule Turing.Graphql.Schema do
   @desc "Update credentials params"
   input_object :update_credential_params do
     field(:email, :string)
+    field(:username, :string)
     field(:password, :string)
     field(:password_confirmation, :string)
   end
 
   mutation do
-
     @desc "Sign up"
     field(:signup, type: :user) do
       arg(:first_name, non_null(:string))
@@ -59,7 +59,5 @@ defmodule Turing.Graphql.Schema do
 
       resolve(&Turing.Graphql.Resolvers.User.update/2)
     end
-
   end
-
 end

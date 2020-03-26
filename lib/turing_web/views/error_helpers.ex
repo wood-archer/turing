@@ -10,7 +10,8 @@ defmodule TuringWeb.ErrorHelpers do
   """
   def error_tag(form, field) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
-      IO.inspect error
+      IO.inspect(error)
+
       content_tag(:span, translate_error(error),
         class: "help-block",
         data: [phx_error_for: input_id(form, field)]
@@ -18,7 +19,7 @@ defmodule TuringWeb.ErrorHelpers do
     end)
   end
 
-   def handle_changeset_errors(errors) do
+  def handle_changeset_errors(errors) do
     Enum.map(errors, fn {field, detail} ->
       "#{field} " <> render_detail(detail)
     end)
