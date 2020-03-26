@@ -35,7 +35,6 @@ defmodule TuringWeb.Router do
 
     get "/", UserController, :sign_up
     get "/sign_in", SessionController, :sign_in
-    get "/chat", ChatController, :index
   end
 
   scope "/", TuringWeb do

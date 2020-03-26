@@ -4,7 +4,7 @@ defmodule TuringWeb.ChatController do
   def index(conn, _params) do
     Phoenix.LiveView.Controller.live_render(
       conn,
-      TuringWeb.Live.Chat,
+      TuringWeb.Live.Chat.Conversation,
       session: %{}
     )
   end
