@@ -5,8 +5,16 @@ defmodule TuringWeb.Live.Chat.Conversation do
   use Phoenix.HTML
 
   alias Turing.{Accounts, Chat, Repo}
+  alias TuringWeb.Presence
 
-  def mount(_params, _assigns, socket) do
+  def mount(params, _assigns, socket) do
+    Presence.track(
+      self(),
+      "conversation_#{params["conversation_id"]}",
+      params["user_id"],
+      %{}
+    )
+
     {:ok, socket}
   end
 
@@ -92,6 +100,17 @@ defmodule TuringWeb.Live.Chat.Conversation do
     updated_messages = socket.assigns[:messages] ++ [new_message]
 
     {:noreply, socket |> assign(:messages, updated_messages)}
+  end
+
+  def handle_info(
+        %{event: "presence_diff", payload: _payload},
+        %{assigns: %{conversation: conversation}} = socket
+      ) do
+    users =
+      "conversation_#{conversation.id}"
+      |> Presence.list()
+
+    {:noreply, assign(socket, users: users)}
   end
 
   defp assign_records(

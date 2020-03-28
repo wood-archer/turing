@@ -13,7 +13,9 @@ defmodule Turing.Application do
       # Start the endpoint when the application starts
       TuringWeb.Endpoint,
       # Guardian DB worker for sweeping out and cleaning outdated tokens
-      Guardian.DB.Token.SweeperServer
+      Guardian.DB.Token.SweeperServer,
+      # track online users
+      TuringWeb.Presence
       # Starts a worker by calling: Turing.Worker.start_link(arg)
       # {Turing.Worker, arg},
     ]
