@@ -2,6 +2,9 @@ defmodule Turing.Chat.MessageReaction do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Turing.Accounts.User
+  alias Turing.Chat.{Emoji, Message}
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "chat_message_reactions" do
