@@ -1,6 +1,6 @@
 <article class="column">
   <h2>Ongoing Conversations</h2>
-  <%= for conversation <- @current_user.conversations do %>
+  <%= for _conversation <- @current_user.conversations do %>
     <div>
       <%= # link conversation.title, to: Routes.conversation_path(@socket, TuringWeb.ConversationLive, conversation.id, @current_user.id ) %>
     </div>

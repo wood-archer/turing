@@ -57,7 +57,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
             user_id: user_id,
             user: user
           }
-        } = socket
+        } = _socket
       ) do
     case Chat.create_message(%{
            conversation_id: conversation_id,
