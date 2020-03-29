@@ -67,12 +67,25 @@ defmodule Turing.ChatTest do
 
   describe "chat_conversation_members" do
     alias Turing.Chat.ConversationMember
+    alias Turing.Accounts
 
     @valid_attrs %{owner: true}
     @update_attrs %{owner: false}
     @invalid_attrs %{owner: nil}
 
+    @valid_user_attrs %{
+      first_name: "some first_name",
+      last_name: "some last_name"
+    }
+
+    def user_fixture(attrs \\ %{}) do
+      {:ok, user} = attrs |> Enum.into(@valid_user_attrs) |> Accounts.create_user()
+      user
+    end
+
     def conversation_member_fixture(attrs \\ %{}) do
+      attrs = Map.put(attrs, :user_id, user_fixture().id)
+
       {:ok, conversation_member} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -92,8 +105,11 @@ defmodule Turing.ChatTest do
     end
 
     test "create_conversation_member/1 with valid data creates a conversation_member" do
+      user = user_fixture()
+      attrs = Map.put(@valid_attrs, :user_id, user.id)
+
       assert {:ok, %ConversationMember{} = conversation_member} =
-               Chat.create_conversation_member(@valid_attrs)
+               Chat.create_conversation_member(attrs)
 
       assert conversation_member.owner == true
     end
@@ -142,10 +158,14 @@ defmodule Turing.ChatTest do
     @update_attrs %{content: "some updated content"}
     @invalid_attrs %{content: nil}
 
-    def message_fixture(attrs \\ %{}) do
+    def message_fixture(_attrs \\ %{}) do
+      conversation = conversation_fixture()
+      user = user_fixture()
+      attrs = Map.merge(@valid_attrs, %{conversation_id: conversation.id, user_id: user.id})
+
       {:ok, message} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(attrs)
         |> Chat.create_message()
 
       message
@@ -162,7 +182,10 @@ defmodule Turing.ChatTest do
     end
 
     test "create_message/1 with valid data creates a message" do
-      assert {:ok, %Message{} = message} = Chat.create_message(@valid_attrs)
+      conversation = conversation_fixture()
+      user = user_fixture()
+      attrs = Map.merge(@valid_attrs, %{conversation_id: conversation.id, user_id: user.id})
+      assert {:ok, %Message{} = message} = Chat.create_message(attrs)
       assert message.content == "some content"
     end
 
@@ -258,14 +281,18 @@ defmodule Turing.ChatTest do
   describe "chat_message_reactions" do
     alias Turing.Chat.MessageReaction
 
-    @valid_attrs %{}
     @update_attrs %{}
-    @invalid_attrs %{}
+    @invalid_attrs %{emoji_id: nil}
 
-    def message_reaction_fixture(attrs \\ %{}) do
+    def message_reaction_fixture(_attrs \\ %{}) do
+      message = message_fixture()
+      user = user_fixture()
+      emoji = emoji_fixture()
+      attrs = %{user_id: user.id, emoji_id: emoji.id, message_id: message.id}
+
       {:ok, message_reaction} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(attrs)
         |> Chat.create_message_reaction()
 
       message_reaction
@@ -282,8 +309,11 @@ defmodule Turing.ChatTest do
     end
 
     test "create_message_reaction/1 with valid data creates a message_reaction" do
-      assert {:ok, %MessageReaction{} = message_reaction} =
-               Chat.create_message_reaction(@valid_attrs)
+      message = message_fixture()
+      user = user_fixture()
+      emoji = emoji_fixture()
+      attrs = %{user_id: user.id, emoji_id: emoji.id, message_id: message.id}
+      assert {:ok, %MessageReaction{} = message_reaction} = Chat.create_message_reaction(attrs)
     end
 
     test "create_message_reaction/1 with invalid data returns error changeset" do
@@ -321,14 +351,17 @@ defmodule Turing.ChatTest do
   describe "chat_seen_messages" do
     alias Turing.Chat.SeenMessage
 
-    @valid_attrs %{}
     @update_attrs %{}
-    @invalid_attrs %{}
+    @invalid_attrs %{user_id: nil}
 
-    def seen_message_fixture(attrs \\ %{}) do
+    def seen_message_fixture(_attrs \\ %{}) do
+      user = user_fixture()
+      message = message_fixture()
+      attrs = %{user_id: user.id, message_id: message.id}
+
       {:ok, seen_message} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(attrs)
         |> Chat.create_seen_message()
 
       seen_message
@@ -345,7 +378,10 @@ defmodule Turing.ChatTest do
     end
 
     test "create_seen_message/1 with valid data creates a seen_message" do
-      assert {:ok, %SeenMessage{} = seen_message} = Chat.create_seen_message(@valid_attrs)
+      user = user_fixture()
+      message = message_fixture()
+      attrs = %{user_id: user.id, message_id: message.id}
+      assert {:ok, %SeenMessage{} = seen_message} = Chat.create_seen_message(attrs)
     end
 
     test "create_seen_message/1 with invalid data returns error changeset" do

@@ -20,6 +20,7 @@ defmodule Turing.Chat.Conversation do
   def changeset(conversation, attrs) do
     conversation
     |> cast(attrs, [:title])
+    |> validate_required(:title)
     |> cast_assoc(:conversation_members)
   end
 end
