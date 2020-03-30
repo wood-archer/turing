@@ -3,11 +3,13 @@ use Mix.Config
 # Configure your database
 config :turing, Turing.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("DATA_DB_USER"),
-  password: System.get_env("DATA_DB_PASS"),
-  hostname: System.get_env("DATA_DB_HOST"),
+  username: System.get_env("DATA_DB_USER", "postgres"),
+  password: System.get_env("DATA_DB_PASS", "postgres"),
+  hostname: System.get_env("DATA_DB_HOST", "localhost"),
   database: "turing_test",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :turing, Turing.Auth.Guardian, secret_key: "guardian"
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
