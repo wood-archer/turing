@@ -1,4 +1,7 @@
 defmodule Turing.Accounts.Credential do
+  @moduledoc """
+  Provides Credential functions
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

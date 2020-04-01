@@ -1,4 +1,8 @@
 defmodule Turing.Graphql.Schema.Types do
+  @moduledoc """
+  Provides Schema Types functions
+  """
+
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: Turing.Repo
 

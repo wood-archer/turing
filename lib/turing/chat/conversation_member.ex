@@ -1,4 +1,8 @@
 defmodule Turing.Chat.ConversationMember do
+  @moduledoc """
+  Provides ConversationMember functions
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

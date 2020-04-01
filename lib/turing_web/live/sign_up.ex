@@ -1,4 +1,7 @@
 defmodule TuringWeb.Live.SignUp do
+  @moduledoc """
+  Provides SignUp live functions
+  """
   use Phoenix.LiveView
 
   alias Turing.Accounts

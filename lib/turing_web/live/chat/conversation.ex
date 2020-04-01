@@ -1,4 +1,8 @@
 defmodule TuringWeb.Live.Chat.Conversation do
+  @moduledoc """
+  Provides Conversation live functions
+  """
+
   require Logger
 
   use Phoenix.LiveView

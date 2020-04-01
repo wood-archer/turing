@@ -1,4 +1,8 @@
 defmodule Turing.Graphql.Schema do
+  @moduledoc """
+  Provides Graphql Schema functions
+  """
+
   use Absinthe.Schema
   import_types(Turing.Graphql.Schema.Types)
 

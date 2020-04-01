@@ -1,4 +1,8 @@
 defmodule TuringWeb.Live.Dashboard do
+  @moduledoc """
+  Provides Dashboard live functions
+  """
+
   require Logger
 
   use Phoenix.LiveView, container: {:div, [class: "row"]}
@@ -81,14 +85,14 @@ defmodule TuringWeb.Live.Dashboard do
     old_members = socket.assigns[:conversation_changeset].changes.conversation_members
     existing_ids = old_members |> Enum.map(& &1.changes.user_id)
 
-    if new_member_id not in existing_ids do
+    if new_member_id in existing_ids do
+      {:noreply, socket}
+    else
       new_members = [%{user_id: new_member_id} | old_members]
 
       new_changeset = Changeset.put_change(changeset, :conversation_members, new_members)
 
       {:noreply, assign(socket, :conversation_changeset, new_changeset)}
-    else
-      {:noreply, socket}
     end
   end
 

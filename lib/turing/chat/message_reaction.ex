@@ -1,4 +1,8 @@
 defmodule Turing.Chat.MessageReaction do
+  @moduledoc """
+  Provides Message Reaction functions
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

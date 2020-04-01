@@ -6,7 +6,7 @@ defmodule TuringWeb.SessionController do
   alias Turing.Auth.Guardian
 
   def sign_in(conn, %{"token" => token}) do
-    case Phoenix.Token.verify(TuringWeb.Endpoint, secret_key_base(), token, max_age: 86400) do
+    case Phoenix.Token.verify(TuringWeb.Endpoint, secret_key_base(), token, max_age: 86_400) do
       {:ok, user_id} ->
         user = Repo.get(User, user_id)
 
