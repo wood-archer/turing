@@ -1,4 +1,8 @@
 defmodule Turing.Chat.SeenMessage do
+  @moduledoc """
+  Provides SeenMessage functions
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

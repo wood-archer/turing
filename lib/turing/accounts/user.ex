@@ -1,4 +1,8 @@
 defmodule Turing.Accounts.User do
+  @moduledoc """
+  Provides User functions
+  """
+
   use Ecto.Schema
 
   import Ecto.Changeset

@@ -1,4 +1,8 @@
 defmodule Turing.Graphql.Resolvers.Auth do
+  @moduledoc """
+  Provides Auth graphql functions
+  """
+
   alias Turing.Repo
   alias Turing.Accounts.{Credential, User}
   alias TuringWeb.ErrorHelpers

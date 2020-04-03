@@ -1,4 +1,8 @@
 defmodule Turing.Chat.Emoji do
+  @moduledoc """
+  Provides Emoji functions
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

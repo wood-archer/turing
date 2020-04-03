@@ -5,7 +5,6 @@ defmodule TuringWeb.DashboardView do
     username =
       contacts
       |> Enum.find(&(&1.id == user_id))
-      # TODO: preload credential and use username instead
       |> Map.get(:first_name)
 
     link("#{username} #{if user_id == current_user_id, do: "(me)", else: "✖"} ",

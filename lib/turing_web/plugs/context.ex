@@ -1,4 +1,8 @@
 defmodule TuringWeb.Context do
+  @moduledoc """
+  Context Plug to build context after authorize
+  """
+
   @behaviour Plug
   import Plug.Conn
 

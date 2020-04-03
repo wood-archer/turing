@@ -1,4 +1,8 @@
 defmodule Turing.Auth.Guardian do
+  @moduledoc """
+  Provides Guardian Auth functions
+  """
+
   use Guardian, otp_app: :turing
 
   alias Turing.Accounts.User

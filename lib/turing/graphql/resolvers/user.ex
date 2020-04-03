@@ -1,4 +1,8 @@
 defmodule Turing.Graphql.Resolvers.User do
+  @moduledoc """
+  Provides Graphql User functions
+  """
+
   alias Turing.Accounts.User
   alias Turing.Repo
   alias TuringWeb.ErrorHelpers

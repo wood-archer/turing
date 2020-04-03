@@ -1,4 +1,8 @@
 defmodule Turing.GraphqlHelper do
+  @moduledoc """
+  Provides GraphqlHelper functions
+  """
+
   use Phoenix.ConnTest
   @endpoint TuringWeb.Endpoint
 

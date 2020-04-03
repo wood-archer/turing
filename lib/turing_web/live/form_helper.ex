@@ -1,4 +1,8 @@
 defmodule TuringWeb.Live.FormHelper do
+  @moduledoc """
+  Provides FormHelper  functions
+  """
+
   import Phoenix.HTML.Form
   import Phoenix.HTML.Tag, only: [tag: 2]
 

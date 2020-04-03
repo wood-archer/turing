@@ -1,4 +1,8 @@
 defmodule Turing.Auth.ErrorHandler do
+  @moduledoc """
+  Provides Auth ErrorHandler functions
+  """
+
   def auth_error(conn, {:no_resource_found, :no_resource_found}, _opts) do
     redirect_to_signin_page("You must be signed in to access that page.", conn)
   end

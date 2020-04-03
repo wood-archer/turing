@@ -1,4 +1,8 @@
 defmodule Turing.Auth do
+  @moduledoc """
+  Provides Auth functions
+  """
+
   alias Turing.Repo
   alias Turing.Accounts.Credential
 
