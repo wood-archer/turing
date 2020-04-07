@@ -1,4 +1,320 @@
 /* This file is for your main application css. */
 
-@import "./phoenix.css";
 @import "../../deps/phoenix_live_view/assets/css/live_view.css";
+
+/*varible*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: top; }
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block; }
+
+* {
+  box-sizing: border-box; }
+
+img {
+  width: 100%;
+  height: auto;
+  object-fit: cover; }
+
+*:focus {
+  outline: none;
+  box-shadow: none; }
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both; }
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  padding: 0px 15px;
+  margin: 0px auto; }
+
+body {
+  font-family: sans-serif;
+  background-image: url("/images/back.svg");
+  background-color: #358ada;
+  background-size: cover; }
+
+form {
+  width: 100%; }
+
+.single-input {
+  width: 100%;
+  margin-top: 20px; }
+  .single-input .input {
+    width: 100%;
+    margin: 10px 0px; }
+    .single-input .input input {
+      transition: 0.6s all;
+      width: 100%;
+      border: none;
+      padding: 16px;
+      font-size: 16px;
+      border-radius: 10px;
+      background-color: #f2f6f9; }
+
+.box-content {
+  display: flex;
+  justify-content: flex-end; }
+  .box-content .box {
+    transition: 0.8s all;
+    margin: 50px;
+    padding: 70px;
+    width: 100%;
+    max-width: 533px;
+    float: right;
+    box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.09);
+    background-color: #ffffff; }
+    .box-content .box .logo {
+      width: 244px;
+      height: 86px;
+      margin: 0 auto;
+      margin-bottom: 40px; }
+    .box-content .box a svg {
+      transform: rotate(180deg);
+      width: 18px;
+      height: 18px; }
+    .box-content .box .box-header {
+      text-align: center;
+      padding-top: 0px;
+      margin: 0 auto; }
+      .box-content .box .box-header h3 {
+        margin: 10px 0px;
+        font-size: 17px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.21;
+        letter-spacing: normal;
+        color: #212121;
+        text-align: center; }
+      .box-content .box .box-header span {
+        font-size: 13.3px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        color: #5b5b5b;
+        display: inline-block;
+        max-width: 258px; }
+      .box-content .box .box-header .signup-header {
+        max-width: 433px;
+        margin: 0 auto; }
+        .box-content .box .box-header .signup-header h3 {
+          width: calc(100% - 22px); }
+        .box-content .box .box-header .signup-header a {
+          width: 22px;
+          height: 20px;
+          float: left; }
+    .box-content .box .box-form {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+      .box-content .box .box-form .btn-blue {
+        margin-top: 40px;
+        text-align: center;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center; }
+        .box-content .box .box-form .btn-blue .term {
+          display: flex;
+          align-items: center;
+          width: calc(100% - 60px); }
+        .box-content .box .box-form .btn-blue button {
+          cursor: pointer;
+          width: 67px;
+          height: 67px;
+          background-color: #2867a1;
+          border-radius: 100%;
+          border: none;
+          margin: 10px 0px; }
+          .box-content .box .box-form .btn-blue button svg {
+            width: 19px;
+            height: 17px;
+            fill: #ffffffff;
+            border: none; }
+        .box-content .box .box-form .btn-blue svg {
+          width: 18px;
+          height: 18px;
+          fill: #e19034; }
+        .box-content .box .box-form .btn-blue span {
+          width: calc(100% - 18px);
+          display: block;
+          padding: 0px 10px;
+          font-size: 14px;
+          font-weight: 600;
+          font-stretch: normal;
+          font-style: normal;
+          letter-spacing: normal;
+          text-align: left;
+          color: #2867a1;
+          font-weight: 500;
+          color: #5b5b5b; }
+          .box-content .box .box-form .btn-blue span a {
+            text-decoration: none;
+            color: #8d5dc3; }
+      .box-content .box .box-form .signin {
+        justify-content: center; }
+
+@media only screen and (max-width: 979px) {
+  .box-content {
+    justify-content: center;
+    width: 100%;
+    align-items: center; } }
+
+@media only screen and (max-width: 767px) {
+  .box-content .box {
+    padding: 50px; }
+  .box-content .box .logo {
+    width: 220px;
+    height: 86px; }
+  .box-content .box .box-form .btn-blue button {
+    width: 47px;
+    height: 47px; }
+  .single-input .input input {
+    transition: 0.6s all;
+    padding: 15px;
+    font-size: 13px; }
+  .box-content .box a svg {
+    width: 15px;
+    height: 15px; } }
+
+@media only screen and (max-width: 479px) {
+  .box-content .box .box-header .signup-header h3 {
+    font-size: 14px; }
+  .box-content .box .box-header span {
+    font-size: 11.3px; }
+  .box-content .box {
+    margin: 15px 0px;
+    padding: 20px; }
+    .box-content .box .logo {
+      width: 161.4px;
+      height: 60.7px; }
+  .box-content .box .box-header {
+    padding-top: 0; }
+  .box-content .box .box-form .signup {
+    flex-direction: column-reverse;
+    margin-top: 20px !important; }
+  .box-content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center; }
+  .box-content .box .box-form .btn-blue button {
+    width: 37px;
+    height: 37px; }
+  .single-input .input input {
+    transition: 0.6s all;
+    padding: 13px;
+    font-size: 12px; }
+  .btn-blue svg {
+    width: 14px;
+    height: 14px; }
+  .box-content .box .box-form .btn-blue button svg {
+    width: 14px;
+    height: 14px; }
+  .box-content .box a svg {
+    width: 13px;
+    height: 13px; } }
