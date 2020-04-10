@@ -67,8 +67,7 @@ jobs:
     # only run this job if the verify job succeeds
     needs: verify
 
-    # only run this job if the workflow is running on the master branch
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/dev'
 
     runs-on: ubuntu-latest
 
