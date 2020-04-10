@@ -85,5 +85,5 @@ jobs:
         with:
           GIGALIXIR_USERNAME: ${{ secrets.GIGALIXIR_USERNAME }}
           GIGALIXIR_PASSWORD: ${{ secrets.GIGALIXIR_PASSWORD }}
-          GIGALIXIR_APP: homely-loud-herculesbeetle
+          GIGALIXIR_APP: cornsilk-adolescent-seagull
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
