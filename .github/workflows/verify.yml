@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        otp: [22.2.7]
-        elixir: [1.10.1]
+        otp: [22.2.8]
+        elixir: [1.10.2]
 
     services:
       db:
@@ -70,15 +70,28 @@ jobs:
     if: github.ref == 'refs/heads/dev'
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        otp: [22.2.8]
+        elixir: [1.10.2]
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: dev
+          fetch-depth: 0
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+
+      - uses: actions/setup-elixir@v1
 
         # actions/checkout@v2 only checks out the latest commit,
-        # so we need to tell it to check out the entire master branch
+        # so we need to tell it to check out the entire dev branch
         with:
-          ref: master
-          fetch-depth: 0
+          ref: dev
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+          
 
       # configure the gigalixir-actions with our credentials and app name
       - uses: mhanberg/gigalixir-action@v0.2.1
