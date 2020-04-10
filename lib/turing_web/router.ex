@@ -33,8 +33,8 @@ defmodule TuringWeb.Router do
   scope "/", TuringWeb do
     pipe_through :browser
 
-    get "/", UserController, :sign_up
-    get "/sign_in", SessionController, :sign_in
+    get "/", SessionController, :sign_in
+    get "/sign_up", UserController, :sign_up
   end
 
   scope "/", TuringWeb do

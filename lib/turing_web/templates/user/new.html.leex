@@ -4,7 +4,7 @@
       <div class="box">
         <div class="box-header">
           <div class="signup-header">
-            <a href="">
+            <%= link to: Routes.session_path(@socket, :sign_in) do %>
               <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
                 <g>
@@ -14,7 +14,7 @@
                   </g>
                 </g>
               </svg>
-            </a>
+            <% end %>
             <h3>SIGN UP</h3>
           </div>
           <span>Enter your basic details and get amazed
