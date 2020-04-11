@@ -80,15 +80,9 @@ jobs:
         with:
           ref: dev
           fetch-depth: 0
-          otp-version: ${{ matrix.otp }}
-          elixir-version: ${{ matrix.elixir }}
 
       - uses: actions/setup-elixir@v1
-
-        # actions/checkout@v2 only checks out the latest commit,
-        # so we need to tell it to check out the entire dev branch
         with:
-          ref: dev
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
           
