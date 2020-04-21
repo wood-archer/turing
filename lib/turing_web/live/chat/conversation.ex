@@ -23,29 +23,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   def render(assigns) do
-    ~L"""
-    <div>
-      <%= @conversation.title %>
-    </div>
-    <hr />
-
-    <div>
-      <%= for message <- @messages do %>
-        <div>
-          <b><%= message.user.first_name %></b>: <%= message.content %>
-        </div>
-      <% end %>
-    </div>
-
-    <hr />
-
-    <div>
-      <%= f = form_for :message, "#", [phx_submit: "send_message"] %>
-        <%= text_input f, :content %>
-        <%= submit "Send" %>
-      </form>
-    </div>
-    """
+    TuringWeb.Chat.ConversationView.render("index.html", assigns)
   end
 
   def handle_event(
