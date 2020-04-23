@@ -7,6 +7,7 @@ defmodule Turing.Chat.Conversation do
   import Ecto.Changeset
 
   alias Turing.Chat.{ConversationMember, Message}
+  alias Turing.Game.Bid
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -16,6 +17,8 @@ defmodule Turing.Chat.Conversation do
     has_many(:conversation_members, ConversationMember, on_replace: :delete)
     has_many(:users, through: [:conversation_members, :user])
     has_many(:messages, Message)
+
+    has_many(:bids, Bid)
 
     timestamps()
   end

@@ -1,0 +1,52 @@
+<div class="box-form">
+  <%= f = form_for @changeset,
+    "#",
+    [
+      phx_change: :validate,
+      phx_submit: :sign_up
+    ]
+  %>
+
+    <div class="user-detail">
+        <div class="user-profile">
+            <img src="images/boy@2x.png" alt="">
+        </div>
+        <div class="select-img">
+            <!-- <h3>Upload Profile</h3><span>Or</span>
+            <h3>Set as Default</h3> -->
+            <input type="file">
+        </div>
+        <form action="">
+            <div class="single-input">
+                <div class="input">
+                    <input type="text" placeholder="Display Name">
+                </div>
+            </div>
+            <div class="two-btn" >
+                <div class="btn-org signin" phx-click="go_back_to_emal_password_view">
+                    <button><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+                    <g>
+                        <g>
+                            <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333
+                                341.333,170.667 		"/>
+                        </g>
+                    </g>
+                    </svg></button>
+                </div>
+                <div class="btn-blue signin">
+                    <button><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+                    <g>
+                        <g>
+                            <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333
+                                341.333,170.667 		"/>
+                        </g>
+                    </g>
+                    </svg></button>
+                </div>
+            </div>
+        </form>
+    </div>
+  </form>
+</div>

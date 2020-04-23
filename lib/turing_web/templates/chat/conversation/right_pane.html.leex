@@ -1,0 +1,62 @@
+  <div id="right" class="right">
+    <div class="social-feed" style="left: unset; top: 0;left: 0;">
+      <ul>
+        <li style="background-color:#2867A1"></li>
+        <li style="background-color:#358ADA"></li>
+        <li style="background-color:#67A331"></li>
+        <li style="background-color:#D93B11"></li>
+      </ul>
+    </div>
+    <div id="close-btn" class="close-btn mobile" onclick="mobileMenu()">
+      <img src="/images/Star.png" alt="">
+    </div>
+    <div class="main-right">
+      <div class="logo">
+        <img src="/images/TT_logo_White.svg" alt="">
+      </div>
+      <%= cond do %>
+        <% @chat_right_pane_view == :navigate_to_choice_arrow -> %>
+          <div class="main-text">
+            <h3>SURE, WHO I AM !</h3>
+            <span>Bid now on conversation ?</span>
+          </div>
+          <div class="btn-blue">
+            <button  phx-click="show_bid_choice" style="background:#358ada"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                    viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+                <g>
+                  <g>
+                    <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333
+                                    341.333,170.667    "/>
+                  </g>
+                </g>
+            </svg></button>
+          </div>
+        <% @chat_right_pane_view == :bid_choice_view -> %>
+          <div class="main-text">
+            <span>Hope your Conversation goes well?</span>
+            <h3>WHO IS YOUR OPPONENT?</h3>
+            <span>Select your option:</span>
+            <span phx-click="bet_on_human" class="avatar-left" style="display:inline-block;margin:20px;cursor:pointer;">
+              <span style="width:80px;height:80px;background-color:white;padding:12px;border-radius:5px;">
+                <img src="/images/boy.svg" alt="" style="width:40px;">
+              </span>
+              <h6 style="margin: 15px 0px;">HUMAN</h6>
+            </span>
+            <span phx-click="bet_on_robot" class="avatar-right" style="display:inline-block;margin:20px;cursor:pointer;">
+              <span style="width:80px;height:80px;background-color:white;padding:12px;border-radius:5px;">
+                <img src="/images/boy.svg" alt="" style="width:40px;">
+              </span>
+              <h6 style="margin: 15px 0px;">ROBOT</h6>
+            </span>
+          </div>
+      <% end %>
+      <div class="social-feed" style="left: unset;bottom: 0; top: unset;right: 0;">
+        <ul>
+          <li style="background-color:#2867A1"></li>
+          <li style="background-color:#358ADA"></li>
+          <li style="background-color:#67A331"></li>
+          <li style="background-color:#D93B11"></li>
+        </ul>
+      </div>
+    </div>
+  </div>

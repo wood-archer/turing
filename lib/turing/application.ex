@@ -15,9 +15,10 @@ defmodule Turing.Application do
       # Guardian DB worker for sweeping out and cleaning outdated tokens
       Guardian.DB.Token.SweeperServer,
       # track online users
-      TuringWeb.Presence
+      TuringWeb.Presence,
       # Starts a worker by calling: Turing.Worker.start_link(arg)
       # {Turing.Worker, arg},
+      Turing.Chat.WaitingRoom
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

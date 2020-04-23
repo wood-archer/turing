@@ -831,4 +831,62 @@ form {
       height: 30px;
       visibility: visible; } }
 
+.match-home {
+  background-color: #d83c2ec7;
+}
+.match-home .matching {
+  height: 600px;
+}
+.match-home .matching .match-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.match-home .matching .match-header h3 {
+  color: #ffffff;
+  padding: 7px;
+}
+.match-home .matching .match-content {
+  margin-top: 40px;
+}
+.match-home .matching .match-content .main-left,
+.match-home .matching .match-content .main-right {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.match-home .matching .match-content .main-left .left,
+.match-home .matching .match-content .main-left .right,
+.match-home .matching .match-content .main-right .left,
+.match-home .matching .match-content .main-right .right {
+  max-width: 200px;
+  height: 200px;
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 40px;
+  border-radius: 8px;
+  box-shadow: 8px 8px 0px #ffffff94;
+}
+.match-home .matching .match-content .main-left .left .logo,
+.match-home .matching .match-content .main-left .right .logo,
+.match-home .matching .match-content .main-right .left .logo,
+.match-home .matching .match-content .main-right .right .logo {
+  max-width: 150px;
+}
+.match-home .matching .match-content .line {
+  width: 1px;
+  background: #ffffffb3;
+  height: 170px;
+}
+
+.footer-match {
+  background: #ffffffff;
+} 
 /*# sourceMappingURL=custom.css.map */

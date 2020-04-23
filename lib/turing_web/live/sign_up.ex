@@ -9,7 +9,7 @@ defmodule TuringWeb.Live.SignUp do
   alias TuringWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do
-    {:ok, fetch(socket)}
+    {:ok, fetch(socket) |> assign(sign_up_view: :email_password_view)}
   end
 
   def render(assigns) do
@@ -31,16 +31,24 @@ defmodule TuringWeb.Live.SignUp do
     {:noreply, assign(socket, changeset: changeset)}
   end
 
+  def handle_event("go_back_to_emal_password_view", _params, socket) do
+    {:noreply, socket |> assign(sign_up_view: :email_password_view)}
+  end
+
   def handle_event("sign_up", %{"user" => params}, socket) do
     case Accounts.create_user(params) do
       {:ok, _user} ->
-        {:stop,
+        {:noreply,
          socket
          |> put_flash(:info, "User signed up successfull!")
-         |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
+         |> assign(sign_up_view: :avatar_upload_view)}
+        #  |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
+
+  # Catch all event to prevent sign_up event without user params.
+  def handle_event(_, _, socket), do: {:noreply, socket}
 end

@@ -23,7 +23,7 @@ defmodule Turing.Chat.ConversationMember do
   @doc false
   def changeset(conversation_member, attrs) do
     conversation_member
-    |> cast(attrs, [:owner, :user_id])
+    |> cast(attrs, [:owner, :user_id, :conversation_id])
     |> validate_required([:owner, :user_id])
     |> unique_constraint(:user, name: :chat_conversation_members_conversation_id_user_id_index)
     |> unique_constraint(:conversation_id, name: :chat_conversation_members_owner)

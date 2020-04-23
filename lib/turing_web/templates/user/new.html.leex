@@ -22,7 +22,11 @@
         </div>
 
         <%# signup form %>
+        <%= if  @sign_up_view == :email_password_view do%>
         <%= render "form.html", assigns %>
+        <% else %>
+        <%= render "avatar_upload.html", assigns %>
+        <% end %>
 
       </div>
     </div>
