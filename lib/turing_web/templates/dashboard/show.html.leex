@@ -1,35 +1,86 @@
-<article class="column">
-  <h2>Ongoing Conversations</h2>
-  <%= for _conversation <- @current_user.conversations do %>
-    <div>
-      <%= # link conversation.title, to: Routes.conversation_path(@socket, TuringWeb.ConversationLive, conversation.id, @current_user.id ) %>
-    </div>
-  <% end %>
-</article>
+    <section class="home-main">
+        <div class="social-feed">
+            <ul>
+                <li style="background-color:#2867A1"></li>
+                <li style="background-color:#358ADA"></li>
+                <li style="background-color:#67A331"></li>
+                <li style="background-color:#D93B11"></li>
+            </ul>
+        </div>
+        <div class="header-main">
+            <div class="header-user">
+                <div class="header-feed" style="background-color: #E19034">
+                    <div class=" feed-icon ">
+                        <img src="images/Notifications.png" alt="">
+                    </div>
+                </div>
+                <div class="header-feed" style="background-color: #67A331">
+                    <div class="feed-icon">
 
-<article class="column">
-  <h2>Create Conversation</h2>
+                        <img src="images/LeaderBoard.png" alt="">
+                    </div>
 
-  <%= form_for @conversation_changeset, "", [phx_submit: :create_conversation], fn f -> %>
-    <p>
-      <%= inputs_for f, :conversation_members, fn cmf -> %>
-        <%= remove_member_link(@contacts, cmf.source.changes[:user_id], @current_user.id) %>
+                </div>
+                <div class="header-feed " style="background-color: #2867A1">
+                    <div class="feed-icon">
 
-        <%= hidden_input cmf, :user_id, value: cmf.source.changes[:user_id] %>
-      <% end %>
-    </p>
+                        <img src="images/Profile.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero">
+            <div class="main-content">
+                <div class="main-left">
+                    <div class="logo">
+                        <img src="images/logo/logo1.png" alt="">
+                    </div>
+                </div>
+                <div class="main-right">
+                    <div class="main-text">
+                        <h3>Man vs. Machine.</h3>
+                        <span>Can you tell the difference?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="social-feed" style="left: unset;bottom: 0; top: unset;right: 0;">
+                <ul>
+                    <li style="background-color:#2867A1"></li>
+                    <li style="background-color:#358ADA"></li>
+                    <li style="background-color:#67A331"></li>
+                    <li style="background-color:#D93B11"></li>
+                </ul>
+            </div>
+        </div>
 
-    <p>
-      <%= text_input f, :title, placeholder: "Title (optional)" %>
-      <%= submit "Create", disabled: disable_create_button?(assigns) %>
-    </p>
-
-    <ul>
-      <%= for user <- contacts_except(@contacts, @current_user) do %>
-        <li>
-          <%= add_member_link(user) %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
-</article>
+    </section>
+    <section class="footer-home">
+        <div class="footer-box">
+            <div class="footer-left">
+                <div class="header-feed" style="background-color: #67A331">
+                    <div class=" feed-icon ">
+                        <img src="images/Star.png" alt="">
+                    </div>
+                </div>
+                <div class="feed-detail">
+                    <span>Total cash you have</span>
+                    <h3>8308 Point</h3>
+                </div>
+            </div>
+            <div class="footer-right">
+                <div class="btn-larg">
+                    <button phx-click="create_conversation" phx-value="">Start game
+                    &nbsp;<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                        viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+                   <g>
+                       <g>
+                           <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333 
+                               341.333,170.667 		"/>
+                       </g>
+                   </g>
+                   </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>

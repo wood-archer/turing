@@ -32,7 +32,7 @@
     <div class="chat-contant">
       <div>
        <%= for message <- @messages do %>
-       <%= if (message.user.id == @user.id) do%>
+       <%= if (message.user.id == @user.id) do %>
          <div class="message-box sender">
            <div class="chater">
              ?

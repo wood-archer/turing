@@ -5,7 +5,7 @@ defmodule TuringWeb.Live.Dashboard do
 
   require Logger
 
-  use Phoenix.LiveView, container: {:div, [class: "row"]}
+  use Phoenix.LiveView
   use Phoenix.HTML
 
   alias TuringWeb.DashboardView
@@ -56,6 +56,46 @@ defmodule TuringWeb.Live.Dashboard do
           else: conversation_form["title"]
         )
       )
+
+    case Chat.create_conversation(conversation_form) do
+      {:ok, _} ->
+        {:noreply,
+         assign(
+           socket,
+           :current_user,
+           Repo.preload(current_user, :conversations, force: true)
+         )}
+
+      {:error, err} ->
+        Logger.error(inspect(err))
+    end
+  end
+
+  @doc """
+  creates a conversation by picking a random person from the available users
+  Build a title based on the usernames of conversation members.
+  finally, reload the current user's `conversations` association, and re-assign
+  it tot the socket so the template will be re-rendered.
+  """
+  def handle_event(
+        "create_conversation",
+        _value,
+        %{
+          assigns: %{
+            conversation_changeset: changeset,
+            current_user: current_user,
+            contacts: contacts
+          }
+        } = socket
+      ) do
+    partner = contacts |> Enum.reject(fn user -> user.id == current_user.id end) |> Enum.random()
+
+    conversation_form =
+      Map.new([
+        {"title", build_title(changeset, contacts)},
+        {"conversation_members",
+         %{"0" => %{"user_id" => current_user.id}, "1" => %{"user_id" => partner.id}}}
+      ])
 
     case Chat.create_conversation(conversation_form) do
       {:ok, _} ->
