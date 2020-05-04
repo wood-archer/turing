@@ -123,17 +123,13 @@ defmodule TuringWeb.Live.Dashboard do
         socket
       ) do
     # TODO: publish to other chat party
-    {:stop,
-     socket
-     |> redirect(
-       to:
-         Routes.chat_path(
-           TuringWeb.Endpoint,
-           TuringWeb.Live.Chat.Conversation,
-           conversation_id,
-           user_id
-         )
-     )}
+    TuringWeb.Endpoint.broadcast!(
+      "new_conversation_#{conversation_id}",
+      "start_game",
+      %{conversation_id: conversation_id}
+    )
+
+    {:noreply, socket}
   end
 
   @doc """
@@ -179,7 +175,29 @@ defmodule TuringWeb.Live.Dashboard do
   end
 
   def handle_info(%{event: "matched", payload: _new_message}, socket) do
+    Process.sleep(5000)
     {:noreply, socket |> assign(:matched, true)}
+  end
+
+  def handle_info(
+        %{event: "start_game", payload: payload},
+        %{
+          assigns: %{
+            current_user: current_user
+          }
+        } = socket
+      ) do
+    {:stop,
+     socket
+     |> redirect(
+       to:
+         Routes.chat_path(
+           TuringWeb.Endpoint,
+           TuringWeb.Live.Chat.Conversation,
+           payload.conversation_id,
+           current_user.id
+         )
+     )}
   end
 
   defp build_title(changeset, contacts) do
@@ -257,8 +275,9 @@ defmodule TuringWeb.Live.Dashboard do
              owner: false,
              conversation: conversation
            }) do
-      TuringWeb.Endpoint.broadcast_from!(
-        self(),
+      TuringWeb.Endpoint.subscribe("new_conversation_#{conversation.id}")
+
+      TuringWeb.Endpoint.broadcast!(
         "new_conversation_#{conversation_member.conversation_id}",
         "matched",
         %{}
@@ -266,7 +285,6 @@ defmodule TuringWeb.Live.Dashboard do
 
       socket =
         socket
-        |> assign(:matched, true)
         |> assign(:conversation_id, conversation_member.conversation_id)
         |> assign(match_making_view: :match_making_avatars_view)
 
