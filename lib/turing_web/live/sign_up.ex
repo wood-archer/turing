@@ -36,13 +36,14 @@ defmodule TuringWeb.Live.SignUp do
   end
 
   def handle_event("sign_up", %{"user" => params}, socket) do
-    case Accounts.create_user(params) do
+    case Accounts.setup_user(params) do
       {:ok, _user} ->
         {:noreply,
          socket
          |> put_flash(:info, "User signed up successfull!")
          |> assign(sign_up_view: :avatar_upload_view)}
-        #  |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
+
+      #  |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

@@ -15,6 +15,5 @@ defmodule Turing.Repo.Migrations.CreateBids do
 
     create index(:bids, [:conversation_id])
     create index(:bids, [:user_id])
-
   end
 end

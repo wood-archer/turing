@@ -10,7 +10,7 @@ defmodule TuringWeb.Live.Dashboard do
 
   alias TuringWeb.DashboardView
   alias TuringWeb.Router.Helpers, as: Routes
-  alias Turing.Chat.{Conversation, WaitingRoom}
+  alias Turing.Chat.{Conversation, WaitingRoom, ConversationMember}
   alias Turing.{Accounts, Chat}
   alias Turing.Repo
   alias Ecto.Changeset
@@ -20,7 +20,7 @@ defmodule TuringWeb.Live.Dashboard do
   end
 
   def mount(_params, %{"current_user" => current_user}, socket) do
-    current_user = Repo.preload(current_user, :conversations)
+    current_user = Repo.preload(current_user, [:conversations, :coin_account])
 
     {:ok,
      socket
@@ -29,8 +29,7 @@ defmodule TuringWeb.Live.Dashboard do
      |> assign_contacts(current_user)
      |> assign(match_making_view: :intro_view)
      |> assign(matched: false)
-     |> assign(conversation_id: nil)
-    }
+     |> assign(conversation_id: nil)}
   end
 
   @doc """
@@ -70,6 +69,7 @@ defmodule TuringWeb.Live.Dashboard do
            :current_user,
            Repo.preload(current_user, :conversations, force: true)
          )}
+
       {:error, err} ->
         Logger.error(inspect(err))
     end
@@ -88,12 +88,13 @@ defmodule TuringWeb.Live.Dashboard do
           }
         } = socket
       ) do
-        conversation_id = WaitingRoom.pop()
-        if conversation_id do
-          join_conversation(current_user, conversation_id, socket)
-        else
-          create_conversation(current_user, socket)
-        end      
+    conversation_id = WaitingRoom.pop()
+
+    if conversation_id do
+      join_conversation(current_user, conversation_id, socket)
+    else
+      create_conversation(current_user, socket)
+    end
   end
 
   @doc """
@@ -105,18 +106,34 @@ defmodule TuringWeb.Live.Dashboard do
         %{"conversation_id" => conversation_id},
         socket
       ) do
-        _conversation_id = WaitingRoom.delete(%{"conversation_id" => conversation_id})
-        
-        socket = socket
-                  |> assign(match_making_view: :intro_view)
-                  |> assign(matched: false)
-                  |> assign(conversation_id: nil)
-        {:noreply, socket}
+    _conversation_id = WaitingRoom.delete(%{"conversation_id" => conversation_id})
+
+    socket =
+      socket
+      |> assign(match_making_view: :intro_view)
+      |> assign(matched: false)
+      |> assign(conversation_id: nil)
+
+    {:noreply, socket}
   end
 
-  def handle_event("navigate_to_chat_view", %{"userid" => user_id, "conversationid" => conversation_id}, socket) do
-  # TODO: publish to other chat party
-    {:stop, socket |> redirect(to: Routes.chat_path(TuringWeb.Endpoint, TuringWeb.Live.Chat.Conversation, conversation_id, user_id))}
+  def handle_event(
+        "navigate_to_chat_view",
+        %{"userid" => user_id, "conversationid" => conversation_id},
+        socket
+      ) do
+    # TODO: publish to other chat party
+    {:stop,
+     socket
+     |> redirect(
+       to:
+         Routes.chat_path(
+           TuringWeb.Endpoint,
+           TuringWeb.Live.Chat.Conversation,
+           conversation_id,
+           user_id
+         )
+     )}
   end
 
   @doc """
@@ -161,9 +178,9 @@ defmodule TuringWeb.Live.Dashboard do
     {:noreply, assign(socket, :conversation_changeset, new_changeset)}
   end
 
-  def handle_info(%{event: "matched", payload: _new_message}, socket) do    
+  def handle_info(%{event: "matched", payload: _new_message}, socket) do
     {:noreply, socket |> assign(:matched, true)}
-  end  
+  end
 
   defp build_title(changeset, contacts) do
     user_ids = Enum.map(changeset.changes.conversation_members, & &1.changes.user_id)
@@ -206,19 +223,22 @@ defmodule TuringWeb.Live.Dashboard do
   def create_conversation(current_user, socket) do
     conversation_form =
       Map.new([
-        {"title", "Random"},
-        {"conversation_members",
-         %{"0" => %{"user_id" => current_user.id}}}
+        {"title", current_user.first_name},
+        {"conversation_members", %{"0" => %{"user_id" => current_user.id}}}
       ])
 
     case Chat.create_conversation(conversation_form) do
       {:ok, conversation} ->
         WaitingRoom.push(%{"conversation_id" => conversation.id})
         TuringWeb.Endpoint.subscribe("new_conversation_#{conversation.id}")
-        socket = socket
-        |> assign(:conversation_id, conversation.id)
-        |> assign(match_making_view: :match_making_avatars_view)
+
+        socket =
+          socket
+          |> assign(:conversation_id, conversation.id)
+          |> assign(match_making_view: :match_making_avatars_view)
+
         {:noreply, socket}
+
       {:error, _err} ->
         {:noreply, socket}
     end
@@ -230,23 +250,30 @@ defmodule TuringWeb.Live.Dashboard do
     change the view and assign it to the socket.
   """
   def join_conversation(current_user, conversation_id, socket) do
-    case Chat.create_conversation_member(%{conversation_id: conversation_id, user_id: current_user.id, owner: false}) do
-      {:ok, conversation_member} ->
-        TuringWeb.Endpoint.broadcast_from!(
-          self(),
-          "new_conversation_#{conversation_member.conversation_id}",
-          "matched",
-          %{}
-        )
-        socket = socket
+    with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
+         {:ok, %ConversationMember{} = conversation_member} <-
+           Chat.join_conversation(%{
+             current_user: current_user,
+             owner: false,
+             conversation: conversation
+           }) do
+      TuringWeb.Endpoint.broadcast_from!(
+        self(),
+        "new_conversation_#{conversation_member.conversation_id}",
+        "matched",
+        %{}
+      )
+
+      socket =
+        socket
         |> assign(:matched, true)
         |> assign(:conversation_id, conversation_member.conversation_id)
         |> assign(match_making_view: :match_making_avatars_view)
-        {:noreply, socket}
+
+      {:noreply, socket}
+    else
       {:error, _} ->
         {:noreply, socket}
     end
-
-
   end
 end

@@ -296,7 +296,6 @@ defmodule Turing.Game do
     CoinLog.changeset(coin_log, %{})
   end
 
-
   @doc """
     Check can bid
     If requested amount is available in the coin_account balance
@@ -305,11 +304,11 @@ defmodule Turing.Game do
 
   def check_can_bid?(%{"user_id" => user_id, "coins" => coins}) do
     with %User{} = _user <- Repo.get(User, user_id),
-          %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: user_id}),
-          true <- coin_account.balance >= coins do
-            true
+         %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: user_id}),
+         true <- coin_account.balance >= coins do
+      true
     else
-        _ -> false
+      _ -> false
     end
   end
 
@@ -320,32 +319,40 @@ defmodule Turing.Game do
   """
   def make_bid(%{"conversation_id" => conversation_id, "user_id" => user_id} = params) do
     with %User{} = _user <- Repo.get(User, user_id),
-          %Conversation{} = _conversation <- Repo.get(Conversation, conversation_id),
-          %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: user_id}),
-          {:ok, %Bid{} = bid} <- make_bid_transaction(params, coin_account) do
-            {:ok, bid}
+         %Conversation{} = _conversation <- Repo.get(Conversation, conversation_id),
+         %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: user_id}),
+         {:ok, %Bid{} = bid} <- make_bid_transaction(params, coin_account) do
+      {:ok, bid}
     else
-        nil -> 
-          nil
-        {error, changeset} -> 
-          {error, changeset}
+      nil ->
+        nil
+
+      {error, changeset} ->
+        {error, changeset}
     end
   end
 
   def make_bid_transaction(%{"coins" => coins, "user_id" => user_id} = params, coin_account) do
     new_balance = coin_account.balance - coins
+
     Multi.new()
     |> Multi.insert(:create_bid, Bid.changeset(%Bid{}, params))
     |> Multi.update(:update_balance, CoinAccount.changeset(coin_account, %{balance: new_balance}))
     |> Multi.insert(:add_coin_log, fn %{create_bid: bid} ->
-      CoinLog.changeset(%CoinLog{}, %{user_id: user_id, coin_account_id: coin_account.id, bid_id: bid.id, coins: coins})
+      CoinLog.changeset(%CoinLog{}, %{
+        user_id: user_id,
+        coin_account_id: coin_account.id,
+        bid_id: bid.id,
+        coins: coins
+      })
     end)
     |> Repo.transaction()
-    |> case  do
+    |> case do
       {:ok, %{create_bid: bid}} ->
         {:ok, bid}
+
       {:error, _, reason, _changes_so_far} ->
-        {:error, reason}              
+        {:error, reason}
     end
   end
 
@@ -355,32 +362,48 @@ defmodule Turing.Game do
     Update coin_account
   """
   def settle_bid(%{"bid_id" => bid_id, "result" => result} = _params) do
-    with %Bid{} = bid <- Repo.get(Bid,bid_id),
-          %User{} = user <- Repo.get(User, bid.user_id),
-          %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: bid.user_id}),
-          coins = settle_bid_value(%{"result" => result, "coins" => bid.coins}),
-          {:ok, %Bid{} = bid} <- settle_bid_transaction(%{"result" => result, "coins" => coins}, bid, coin_account) do
-          {:ok, bid}
+    with %Bid{} = bid <- Repo.get(Bid, bid_id),
+         %User{} = user <- Repo.get(User, bid.user_id),
+         %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: bid.user_id}),
+         coins = settle_bid_value(%{"result" => result, "coins" => bid.coins}),
+         {:ok, %Bid{} = bid} <-
+           settle_bid_transaction(%{"result" => result, "coins" => coins}, bid, coin_account) do
+      {:ok, bid}
     else
-        nil -> 
-          nil
-        {error, changeset} -> 
-          {error, changeset}
+      nil ->
+        nil
+
+      {error, changeset} ->
+        {error, changeset}
     end
   end
 
   def settle_bid_transaction(%{"result" => result, "coins" => coins} = _params, bid, coin_account) do
     new_balance = coin_account.balance + coins
+
     Multi.new()
     |> Multi.update(:update_bid, Bid.changeset(bid, %{result: result}))
-    |> Multi.update(:update_coin_account, CoinAccount.changeset(coin_account, %{balance: new_balance}))
-    |> Multi.insert(:add_coin_log, CoinLog.changeset(%CoinLog{}, %{user_id: coin_account.user_id, coin_account_id: coin_account.id, bid_id: bid.id, coins: coins, notes: "BID_SETTLEMENT"}))
+    |> Multi.update(
+      :update_coin_account,
+      CoinAccount.changeset(coin_account, %{balance: new_balance})
+    )
+    |> Multi.insert(
+      :add_coin_log,
+      CoinLog.changeset(%CoinLog{}, %{
+        user_id: coin_account.user_id,
+        coin_account_id: coin_account.id,
+        bid_id: bid.id,
+        coins: coins,
+        notes: "BID_SETTLEMENT"
+      })
+    )
     |> Repo.transaction()
-    |> case  do
+    |> case do
       {:ok, %{update_bid: bid}} ->
         {:ok, bid}
+
       {:error, _, reason, _changes_so_far} ->
-        {:error, reason}              
+        {:error, reason}
     end
   end
 
@@ -388,7 +411,7 @@ defmodule Turing.Game do
     case result do
       "SUCCESS" -> coins * 2
       "FAILURE" -> 0
-      "TIE" -> coins        
+      "TIE" -> coins
     end
   end
 
@@ -398,41 +421,47 @@ defmodule Turing.Game do
   """
   def resolve_game(conversation_id) do
     with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
-          conversation = conversation |> Repo.preload([:bids, :users]),
-          results = resolve_bids(conversation.bids, conversation.users) do
-          Enum.map(results, fn result->
-            settle_bid(result)
-          end)                    
+         conversation = conversation |> Repo.preload([:bids, :users]),
+         results = resolve_bids(conversation.bids, conversation.users) do
+      Enum.map(results, fn result ->
+        settle_bid(result)
+      end)
     else
-      nil -> 
+      nil ->
         nil
-      {error, changeset} -> 
+
+      {error, changeset} ->
         {error, changeset}
     end
-
-  end  
+  end
 
   @doc """
     Resolve all bids for a conversation
     #Need to improve current logic
   """
   def resolve_bids(bids, users) do
-    result_map = Enum.reduce(bids,%{}, fn (bid, result_map) ->
-      opponent = Enum.reject(users, fn user_id ->  bid.user_id == user_id end) |> hd()
-      result = if identify(opponent) == bid.guess, do: "SUCCESS", else: "FAILURE"
-      bid_id = bid.id
-      Map.merge(result_map, %{bid_id => result})
-    end) 
+    result_map =
+      Enum.reduce(bids, %{}, fn bid, result_map ->
+        opponent = Enum.reject(users, fn user_id -> bid.user_id == user_id end) |> hd()
+        result = if identify(opponent) == bid.guess, do: "SUCCESS", else: "FAILURE"
+        bid_id = bid.id
+        Map.merge(result_map, %{bid_id => result})
+      end)
+
     [user_1_bid, user_2_bid] = bids
 
-    if Map.get(result_map, user_1_bid.id) == "SUCCESS" && Map.get(result_map, user_1_bid.id) == "SUCCESS" do
-      [%{"bid_id" => user_1_bid.id, "result" => "TIE"}, 
-       %{"bid_id" => user_2_bid.id, "result" => "TIE"}]
-    else  
-      [%{"bid_id" => user_1_bid.id, "result" => Map.get(result_map, user_1_bid.id)}, 
-       %{"bid_id" => user_2_bid.id, "result" => Map.get(result_map, user_2_bid.id)}]
+    if Map.get(result_map, user_1_bid.id) == "SUCCESS" &&
+         Map.get(result_map, user_1_bid.id) == "SUCCESS" do
+      [
+        %{"bid_id" => user_1_bid.id, "result" => "TIE"},
+        %{"bid_id" => user_2_bid.id, "result" => "TIE"}
+      ]
+    else
+      [
+        %{"bid_id" => user_1_bid.id, "result" => Map.get(result_map, user_1_bid.id)},
+        %{"bid_id" => user_2_bid.id, "result" => Map.get(result_map, user_2_bid.id)}
+      ]
     end
-
   end
 
   def identify(player) do
@@ -441,16 +470,18 @@ defmodule Turing.Game do
 
   def game_status_complete?(conversation_id) do
     with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
-          conversation = conversation |> Repo.preload([:bids, :users]),
-          true <- length(conversation.bids) == length(conversation.users) && length(conversation.bids) > 0 do
-          true
+         conversation = conversation |> Repo.preload([:bids, :users]),
+         true <-
+           length(conversation.bids) == length(conversation.users) &&
+             length(conversation.bids) > 0 do
+      true
     else
-      _ -> 
-        false      
+      _ ->
+        false
     end
   end
 
   def get_my_bid(%{"conversation_id" => conversation_id, "user_id" => user_id}) do
     Repo.get_by(Bid, %{conversation_id: conversation_id, user_id: user_id})
-  end  
+  end
 end

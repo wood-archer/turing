@@ -12,6 +12,5 @@ defmodule Turing.Repo.Migrations.CreateCoinLogs do
 
       timestamps()
     end
-
   end
 end

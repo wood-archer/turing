@@ -5,7 +5,7 @@ defmodule Turing.Chat do
 
   import Ecto.Query, warn: false
   alias Turing.Repo
-
+  alias Ecto.Multi
   alias Turing.Chat.Conversation
   alias Turing.Chat.SeenMessage
   alias Turing.Chat.Message
@@ -575,5 +575,31 @@ defmodule Turing.Chat do
   """
   def change_seen_message(%SeenMessage{} = seen_message) do
     SeenMessage.changeset(seen_message, %{})
+  end
+
+  def join_conversation(%{current_user: current_user, owner: false, conversation: conversation}) do
+    Multi.new()
+    |> Multi.update(
+      :update_conversation,
+      Conversation.changeset(conversation, %{
+        "title" => Enum.join([conversation.title, " & ", current_user.first_name])
+      })
+    )
+    |> Multi.insert(
+      :create_conversation_member,
+      ConversationMember.changeset(%ConversationMember{}, %{
+        conversation_id: conversation.id,
+        user_id: current_user.id,
+        owner: false
+      })
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{create_conversation_member: conversation_member}} ->
+        {:ok, conversation_member}
+
+      {:error, error} ->
+        {:error, error}
+    end
   end
 end

@@ -8,7 +8,6 @@ defmodule Turing.Repo.Migrations.CreateCoinAccountss do
       add :balance, :integer
 
       timestamps()
-    end    
-
+    end
   end
 end

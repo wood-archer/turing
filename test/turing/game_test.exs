@@ -6,8 +6,18 @@ defmodule Turing.GameTest do
   describe "bids" do
     alias Turing.Game.Bid
 
-    @valid_attrs %{conversation: "some conversation", coins: 42, result: "some result", user: "some user"}
-    @update_attrs %{conversation: "some updated conversation", coins: 43, result: "some updated result", user: "some updated user"}
+    @valid_attrs %{
+      conversation: "some conversation",
+      coins: 42,
+      result: "some result",
+      user: "some user"
+    }
+    @update_attrs %{
+      conversation: "some updated conversation",
+      coins: 43,
+      result: "some updated result",
+      user: "some updated user"
+    }
     @invalid_attrs %{conversation: nil, coins: nil, result: nil, user: nil}
 
     def bid_fixture(attrs \\ %{}) do
@@ -106,7 +116,10 @@ defmodule Turing.GameTest do
 
     test "update_coin_account/2 with valid data updates the coin_account" do
       coin_account = coin_account_fixture()
-      assert {:ok, %CoinAccount{} = coin_account} = Game.update_coin_account(coin_account, @update_attrs)
+
+      assert {:ok, %CoinAccount{} = coin_account} =
+               Game.update_coin_account(coin_account, @update_attrs)
+
       assert coin_account.balance == 43
       assert coin_account.user == "some updated user"
     end
@@ -133,7 +146,12 @@ defmodule Turing.GameTest do
     alias Turing.Game.CoinLog
 
     @valid_attrs %{bid: "some bid", coin: "some coin", user: "some user", value: 42}
-    @update_attrs %{bid: "some updated bid", coin: "some updated coin", user: "some updated user", value: 43}
+    @update_attrs %{
+      bid: "some updated bid",
+      coin: "some updated coin",
+      user: "some updated user",
+      value: 43
+    }
     @invalid_attrs %{bid: nil, coin: nil, user: nil, value: nil}
 
     def coin_log_fixture(attrs \\ %{}) do
