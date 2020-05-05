@@ -200,7 +200,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
         %{assigns: %{conversation_id: conversation_id}} = socket
       ) do
     Game.resolve_game(conversation_id)
-    Process.sleep(10000)
+    Process.sleep(3000)
 
     TuringWeb.Endpoint.broadcast!(
       "conversation_#{conversation_id}",
