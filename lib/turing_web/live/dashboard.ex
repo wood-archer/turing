@@ -175,7 +175,7 @@ defmodule TuringWeb.Live.Dashboard do
   end
 
   def handle_info(%{event: "matched", payload: _new_message}, socket) do
-    Process.sleep(5000)
+    Process.sleep(3000)
     {:noreply, socket |> assign(:matched, true)}
   end
 
