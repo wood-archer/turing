@@ -1,6 +1,9 @@
 defmodule TuringWeb.Router do
   use TuringWeb, :router
 
+  use Plug.ErrorHandler
+  use Sentry.Plug
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session

@@ -62,3 +62,13 @@ config :turing, Turing.Auth.Guardian, secret_key: System.get_env("GUARDIAN_SECRE
 #   hostname: System.get_env("DATA_DB_HOST"),
 #   database: "turing_prod",
 #   pool_size: 10
+
+config :sentry,
+  dsn: System.get_env("SENTRY_DSN"),
+  environment_name: :prod,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    env: "production"
+  },
+  included_environments: [:prod]
