@@ -57,7 +57,13 @@
                         <% @status == "SHOW_RESULT" -> %>
                             <button phx-click="show_result">SHOW RESULT
                         <% true -> %>
-                            <%# Need to add loader for wait case %>
+                            <div class="loader">
+                                <div class="loader-text">RESOLVING</div>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
                         <% end %>
                     &nbsp;<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">

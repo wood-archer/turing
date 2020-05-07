@@ -599,6 +599,7 @@ defmodule Turing.Chat do
         {:ok, conversation_member}
 
       {:error, error} ->
+        WaitingRoom.push(conversation.id)
         {:error, error}
     end
   end

@@ -363,7 +363,7 @@ defmodule Turing.Game do
   """
   def settle_bid(%{"bid_id" => bid_id, "result" => result} = _params) do
     with %Bid{} = bid <- Repo.get(Bid, bid_id),
-         %User{} = user <- Repo.get(User, bid.user_id),
+         %User{} = _user <- Repo.get(User, bid.user_id),
          %CoinAccount{} = coin_account <- Repo.get_by(CoinAccount, %{user_id: bid.user_id}),
          coins = settle_bid_value(%{"result" => result, "coins" => bid.coins}),
          {:ok, %Bid{} = bid} <-
@@ -418,6 +418,7 @@ defmodule Turing.Game do
   @doc """
     Resolve the conversation game.
     Update the respective bids with game result
+    #Not used currently
   """
   def resolve_game(conversation_id) do
     with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
@@ -435,9 +436,32 @@ defmodule Turing.Game do
     end
   end
 
+  def get_result(bid, opponent) do
+    if identify(opponent) == bid.guess, do: "SUCCESS", else: "FAILURE"
+  end
+
+  def resolve_bid(conversation_id, bid_id) do
+    with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
+         %Bid{} = bid <- Repo.get(Bid, bid_id),
+         conversation = conversation |> Repo.preload([:users]),
+         opponent =
+           Enum.reject(conversation.users, fn user_id -> bid.user_id == user_id end) |> hd(),
+         result = get_result(bid, opponent),
+         {:ok, bid} <- settle_bid(%{"bid_id" => bid.id, "result" => result}) do
+      {:ok, bid}
+    else
+      nil ->
+        nil
+
+      {error, changeset} ->
+        {error, changeset}
+    end
+  end
+
   @doc """
     Resolve all bids for a conversation
     #Need to improve current logic
+    #Not used currently
   """
   def resolve_bids(bids, users) do
     result_map =
