@@ -39,7 +39,7 @@
            </div>
            <div class="chat-text">
              <div class="chat-user">
-               <h4><%= message.user.first_name %></h4>&nbsp;&nbsp;<span>|</span>
+               <h4><%= message.user.first_name %></h4>
              </div>
              <p><%= message.content %></p>
            </div>
@@ -51,7 +51,7 @@
            </div>
            <div class="chat-text">
              <div class="chat-user">
-               <h4><%= message.user.first_name %></h4>&nbsp;&nbsp;<span>|</span>
+               <h4><%= message.user.first_name %></h4>
              </div>
              <p><%= message.content %></p>
            </div>
@@ -66,18 +66,18 @@
     </div>
     <div class="chat-main">
       <div class="chat-shortcut">
-        <div class="chat-text">
-          <span>How are you ?</span>
-        </div>
-        <div class="chat-text">
-          <span>How about your day?</span>
-        </div>
-        <div class="chat-text">
-          <span>Why do we use it?</span>
-        </div>
-        <div class="chat-text">
-          <span>Where can I get some?</span>
-        </div>
+        <!-- <div class="chat-text"> -->
+        <!--   <span>How are you ?</span> -->
+        <!-- </div> -->
+        <!-- <div class="chat-text"> -->
+        <!--   <span>How about your day?</span> -->
+        <!-- </div> -->
+        <!-- <div class="chat-text"> -->
+        <!--   <span>Why do we use it?</span> -->
+        <!-- </div> -->
+        <!-- <div class="chat-text"> -->
+        <!--   <span>Where can I get some?</span> -->
+        <!-- </div> -->
       </div>
          <%= f = form_for :message, "#", [phx_submit: "send_message", class: "chat-input"] %>
          <div class="add-files">
