@@ -5,7 +5,6 @@ defmodule Turing.Chat do
 
   import Ecto.Query, warn: false
   alias Turing.Repo
-  alias Ecto.Multi
   alias Turing.Chat.Conversation
   alias Turing.Chat.SeenMessage
   alias Turing.Chat.Message

@@ -954,3 +954,31 @@ form {
   100%{-webkit-transform:translateX(-20px);
   }
 }
+
+.leader-table {
+  margin: 100px;
+  width: 80%;
+}
+.leader-table tr {
+  background: cornsilk;
+  font-size: 40px;
+  padding: 20px;
+}
+.leader-table tr td{
+  padding-left: 20px;
+}
+.leader-header-section {
+  display: inline-flex;
+  margin-left: 50px;
+  margin-top: 20px;
+}
+.leader-header-section h1{
+  color: black;
+  padding-left: 50px;
+  padding-top: 8px;
+}
+.leader-enter-button {
+  background: transparent;
+  border-style: inherit;
+  cursor: pointer;
+}

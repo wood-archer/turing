@@ -6,7 +6,6 @@ defmodule TuringWeb.Live.SignUp do
 
   alias Turing.Accounts
   alias Turing.Accounts.User
-  alias TuringWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do
     {:ok, fetch(socket) |> assign(sign_up_view: :email_password_view)}

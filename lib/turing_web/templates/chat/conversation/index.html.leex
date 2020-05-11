@@ -1,12 +1,12 @@
 <%= cond do %>
-<%= @play_view == :chat -> %>
+<% @play_view == :chat -> %>
   <%= render "chat_view.html", assigns %>
-<%= @play_view == :bet_amount -> %>
+<% @play_view == :bet_amount -> %>
   <%= render "bet_amount.html", assigns %>
-<%= @play_view == :won -> %>
+<% @play_view == :won -> %>
   <%= render "won.html", assigns %>
-<%= @play_view == :lost -> %>
+<% @play_view == :lost -> %>
   <%= render "lost.html", assigns %>
-<%= @play_view == :tie -> %>
+<% @play_view == :tie -> %>
   <%= render "lost.html", assigns %>  
 <% end %>

@@ -46,6 +46,7 @@ defmodule TuringWeb.Router do
     get "/me", PageController, :index
 
     live "/chat/conversations/:conversation_id/users/:user_id", Live.Chat.Conversation, as: :chat
+    live "/leaderboard", Live.Leaderboard, as: :leaderboard
 
     delete "/sign_in", SessionController, :sign_out
   end

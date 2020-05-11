@@ -65,6 +65,26 @@ defmodule TuringWeb.Live.Dashboard do
     {:noreply, socket |> assign(match_making_view: :intro_view)}
   end
 
+  def handle_event(
+        "view_leaderboard",
+        _params,
+        %{
+          assigns: %{
+            current_user: current_user
+          }
+        } = socket
+      ) do
+    {:stop,
+     socket
+     |> redirect(
+       to:
+         Routes.leaderboard_path(
+           TuringWeb.Endpoint,
+           TuringWeb.Live.Leaderboard
+         )
+     )}
+  end
+
   def handle_info(
         %{event: "matched", payload: payload},
         %{

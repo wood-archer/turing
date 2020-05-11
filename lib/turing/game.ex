@@ -418,27 +418,6 @@ defmodule Turing.Game do
     end
   end
 
-  @doc """
-    Resolve the conversation game.
-    Update the respective bids with game result
-    #Not used currently
-  """
-  def resolve_game(conversation_id) do
-    with %Conversation{} = conversation <- Repo.get(Conversation, conversation_id),
-         conversation = conversation |> Repo.preload([:bids, :users]),
-         results = resolve_bids(conversation.bids, conversation.users) do
-      Enum.map(results, fn result ->
-        settle_bid(result)
-      end)
-    else
-      nil ->
-        nil
-
-      {error, changeset} ->
-        {error, changeset}
-    end
-  end
-
   def get_result(bid, opponent) do
     if identify(opponent) == bid.guess, do: "SUCCESS", else: "FAILURE"
   end
@@ -448,7 +427,7 @@ defmodule Turing.Game do
          %Bid{} = bid <- Repo.get(Bid, bid_id),
          conversation = conversation |> Repo.preload([:users]),
          opponent =
-           Enum.reject(conversation.users, fn user_id -> bid.user_id == user_id end) |> hd(),
+           Enum.reject(conversation.users, fn user -> user.id == bid.user_id end) |> hd(),
          result = get_result(bid, opponent),
          {:ok, bid} <- settle_bid(%{"bid_id" => bid.id, "result" => result}) do
       {:ok, bid}
@@ -458,36 +437,6 @@ defmodule Turing.Game do
 
       {error, changeset} ->
         {error, changeset}
-    end
-  end
-
-  @doc """
-    Resolve all bids for a conversation
-    #Need to improve current logic
-    #Not used currently
-  """
-  def resolve_bids(bids, users) do
-    result_map =
-      Enum.reduce(bids, %{}, fn bid, result_map ->
-        opponent = Enum.reject(users, fn user_id -> bid.user_id == user_id end) |> hd()
-        result = if identify(opponent) == bid.guess, do: "SUCCESS", else: "FAILURE"
-        bid_id = bid.id
-        Map.merge(result_map, %{bid_id => result})
-      end)
-
-    [user_1_bid, user_2_bid] = bids
-
-    if Map.get(result_map, user_1_bid.id) == "SUCCESS" &&
-         Map.get(result_map, user_1_bid.id) == "SUCCESS" do
-      [
-        %{"bid_id" => user_1_bid.id, "result" => "TIE"},
-        %{"bid_id" => user_2_bid.id, "result" => "TIE"}
-      ]
-    else
-      [
-        %{"bid_id" => user_1_bid.id, "result" => Map.get(result_map, user_1_bid.id)},
-        %{"bid_id" => user_2_bid.id, "result" => Map.get(result_map, user_2_bid.id)}
-      ]
     end
   end
 
@@ -514,9 +463,9 @@ defmodule Turing.Game do
 
   def reload_coin_account(coin_account, coins \\ @default_signup_coin_account_balance) do
     with true <- coin_account.balance <= 0 do
-      reload_coin_account_transaction(coin_account, @default_signup_coin_account_balance)
+      reload_coin_account_transaction(coin_account, coins)
     else
-      _ -> false
+      _ -> {:ok, coin_account}
     end
   end
 
