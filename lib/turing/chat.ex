@@ -577,30 +577,16 @@ defmodule Turing.Chat do
     SeenMessage.changeset(seen_message, %{})
   end
 
-  def join_conversation(%{current_user: current_user, owner: false, conversation: conversation}) do
-    Multi.new()
-    |> Multi.update(
-      :update_conversation,
-      Conversation.changeset(conversation, %{
-        "title" => Enum.join([conversation.title, " & ", current_user.first_name])
-      })
-    )
-    |> Multi.insert(
-      :create_conversation_member,
-      ConversationMember.changeset(%ConversationMember{}, %{
-        conversation_id: conversation.id,
-        user_id: current_user.id,
-        owner: false
-      })
-    )
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{create_conversation_member: conversation_member}} ->
-        {:ok, conversation_member}
+  def build_conversation([player_1, player_2]) do
+    Map.new([
+      {"title", "Random"},
+      {"conversation_members",
+       %{"0" => %{"user_id" => player_1}, "1" => %{"user_id" => player_2}}}
+    ])
+    |> create_conversation()
+  end
 
-      {:error, error} ->
-        WaitingRoom.push(conversation.id)
-        {:error, error}
-    end
+  def can_match?(users) do
+    if length(users) >= 2, do: true, else: false
   end
 end

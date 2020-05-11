@@ -13,12 +13,16 @@ defmodule TuringWeb.Live.Chat.Conversation do
   alias TuringWeb.Presence
 
   def mount(params, _assigns, socket) do
+    user_id = params["user_id"]
+
     Presence.track(
       self(),
       "conversation_#{params["conversation_id"]}",
-      params["user_id"],
+      user_id,
       %{}
     )
+
+    TuringWeb.Endpoint.subscribe("user_#{user_id}")
 
     {:ok,
      socket
@@ -36,14 +40,44 @@ defmodule TuringWeb.Live.Chat.Conversation do
     {:stop, socket |> redirect(to: Routes.page_path(TuringWeb.Endpoint, :index))}
   end
 
-  def handle_event("bet_on_human", _params, socket) do
+  def handle_event(
+        "bet_on_human",
+        _params,
+        %{
+          assigns: %{
+            user_id: user_id
+          }
+        } = socket
+      ) do
+    TuringWeb.Endpoint.broadcast_from!(
+      self(),
+      "user_#{user_id}",
+      "play_view",
+      %{bet_on: "Human", play_view: :bet_amount}
+    )
+
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
      |> assign(bet_on: "Human")}
   end
 
-  def handle_event("bet_on_robot", _params, socket) do
+  def handle_event(
+        "bet_on_robot",
+        _params,
+        %{
+          assigns: %{
+            user_id: user_id
+          }
+        } = socket
+      ) do
+    TuringWeb.Endpoint.broadcast_from!(
+      self(),
+      "user_#{user_id}",
+      "play_view",
+      %{bet_on: "Robot", play_view: :bet_amount}
+    )
+
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
@@ -68,6 +102,13 @@ defmodule TuringWeb.Live.Chat.Conversation do
            "guess" => String.upcase(bet_on)
          }) do
       {:ok, bid} ->
+        TuringWeb.Endpoint.broadcast_from!(
+          self(),
+          "user_#{user_id}",
+          "game_status",
+          %{status: "WAITING"}
+        )
+
         send(self(), {:resolve_game, %{bid_id: bid.id}})
 
         {:noreply, socket |> assign(status: "WAITING")}
@@ -75,28 +116,6 @@ defmodule TuringWeb.Live.Chat.Conversation do
       _ ->
         {:noreply, socket}
     end
-  end
-
-  def handle_event(
-        "show_result",
-        _params,
-        %{
-          assigns: %{
-            conversation_id: conversation_id,
-            user_id: user_id
-          }
-        } = socket
-      ) do
-    bid = Game.get_my_bid(%{"conversation_id" => conversation_id, "user_id" => user_id})
-
-    result =
-      case bid.result do
-        "SUCCESS" -> :won
-        "FAILURE" -> :lost
-        "TIE" -> :tie
-      end
-
-    {:noreply, socket |> assign(play_view: result)}
   end
 
   def handle_event("show_bid_choice", _params, socket) do
@@ -141,7 +160,22 @@ defmodule TuringWeb.Live.Chat.Conversation do
     end
   end
 
-  def handle_event("navigate_to_chat_view", _params, socket) do
+  def handle_event(
+        "navigate_to_chat_view",
+        _params,
+        %{
+          assigns: %{
+            user_id: user_id
+          }
+        } = socket
+      ) do
+    TuringWeb.Endpoint.broadcast_from!(
+      self(),
+      "user_#{user_id}",
+      "play_view",
+      %{bet_on: nil, play_view: :bet_amount}
+    )
+
     {:noreply, socket |> assign(play_view: :chat)}
   end
 
@@ -168,6 +202,17 @@ defmodule TuringWeb.Live.Chat.Conversation do
     {:noreply, socket |> assign(:messages, updated_messages)}
   end
 
+  def handle_info(%{event: "play_view", payload: payload}, socket) do
+    {:noreply,
+     socket
+     |> assign(play_view: payload.play_view)
+     |> assign(bet_on: payload.bet_on)}
+  end
+
+  def handle_info(%{event: "game_status", payload: payload}, socket) do
+    {:noreply, socket |> assign(status: payload.status)}
+  end
+
   def handle_info(
         {:resolve_game, payload},
         %{assigns: %{conversation_id: conversation_id}} = socket
@@ -175,29 +220,22 @@ defmodule TuringWeb.Live.Chat.Conversation do
     Process.sleep(3000)
 
     with {:ok, %Game.Bid{} = bid} <- Game.resolve_bid(conversation_id, payload.bid_id),
-         game_status = Game.game_status_complete?(conversation_id) do
-      cond do
-        !game_status && bid.result == "SUCCESS" ->
-          TuringWeb.Endpoint.broadcast_from!(
-            self(),
-            "conversation_#{conversation_id}",
-            "game_over",
-            %{}
-          )
+         game_status_complete = Game.game_status_complete?(conversation_id) do
+      TuringWeb.Endpoint.broadcast_from!(
+        self(),
+        "conversation_#{conversation_id}",
+        "bid_resolved",
+        %{game_status_complete: game_status_complete, bid: bid}
+      )
 
-        !game_status && bid.result == "FAILURE" ->
-          TuringWeb.Endpoint.broadcast_from!(
-            self(),
-            "conversation_#{conversation_id}",
-            "play_game",
-            %{}
-          )
+      result =
+        case bid.result do
+          "SUCCESS" -> :won
+          "FAILURE" -> :lost
+          "TIE" -> :tie
+        end
 
-        true ->
-          Logger.debug("Game complete")
-      end
-
-      {:noreply, socket |> assign(status: "SHOW_RESULT")}
+      {:noreply, socket |> assign(play_view: result)}
     else
       _ ->
         {:noreply, socket}
@@ -205,17 +243,31 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   def handle_info(
-        %{event: "play_game", payload: _payload},
-        socket
+        %{event: "bid_resolved", payload: payload},
+        %{
+          assigns: %{
+            user_id: user_id
+          }
+        } = socket
       ) do
-    {:noreply, socket |> assign(chat_right_pane_view: :bid_choice_view)}
-  end
+    cond do
+      payload.bid.user_id == user_id && payload.bid.result == "SUCCESS" ->
+        {:noreply, socket |> assign(play_view: :won)}
 
-  def handle_info(
-        %{event: "game_over", payload: _payload},
-        socket
-      ) do
-    {:noreply, socket |> assign(play_view: :lost)}
+      payload.bid.user_id == user_id && payload.bid.result == "FAILURE" ->
+        {:noreply, socket |> assign(play_view: :lost)}
+
+      payload.bid.user_id != user_id && payload.bid.result == "SUCCESS" &&
+          !payload.game_status_complete ->
+        {:noreply, socket |> assign(play_view: :lost)}
+
+      payload.bid.user_id != user_id && payload.bid.result == "FAILURE" &&
+          !payload.game_status_complete ->
+        {:noreply, socket |> assign(chat_right_pane_view: :bid_choice_view)}
+
+      true ->
+        {:noreply, socket}
+    end
   end
 
   def handle_info(

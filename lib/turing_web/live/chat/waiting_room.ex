@@ -1,51 +1,50 @@
 defmodule Turing.Chat.WaitingRoom do
   use GenServer
+  alias Phoenix.Socket.{Broadcast}
+
+  alias TuringWeb.Presence
+  alias Turing.Chat
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, MapSet.new(), name: Conversations)
   end
 
   def init(state) do
+    TuringWeb.Endpoint.subscribe("waiting_room")
     {:ok, state}
   end
 
-  def handle_call(:get_all, _, state) do
-    {:reply, state, state}
-  end
-
-  def handle_call({:add_entry, conversation_id}, _, state) do
-    new_state = MapSet.put(state, conversation_id)
-    {:reply, conversation_id, new_state}
-  end
-
-  def handle_call({:remove_entry, conversation_id}, _, state) do
-    new_state = MapSet.delete(state, conversation_id)
-    {:reply, conversation_id, new_state}
-  end
-
-  def handle_call(:pop_entry, _, state) do
-    if MapSet.size(state) > 0 do
-      conversation_id = MapSet.to_list(state) |> hd()
-      new_state = MapSet.delete(state, conversation_id)
-      {:reply, conversation_id, new_state}
+  def handle_info(broadcast = %Broadcast{}, state) do
+    with event when event in ["presence_diff"] <-
+           broadcast.event,
+         true <- broadcast.topic == "waiting_room",
+         true <- map_size(broadcast.payload.joins) > 0,
+         users = Presence.list("waiting_room") |> Map.keys(),
+         true <- Chat.can_match?(users),
+         players = Enum.take_random(users, 2),
+         {:ok, %Chat.Conversation{} = conversation} <- Chat.build_conversation(players) do
+      manage_players(players, conversation)
+      {:noreply, state}
     else
-      {:reply, nil, state}
+      _ ->
+        {:noreply, state}
     end
   end
 
-  def push(%{"conversation_id" => conversation_id}) do
-    GenServer.call(Conversations, {:add_entry, conversation_id})
-  end
+  def manage_players(players, conversation_id) do
+    Enum.map(players, fn player ->
+      TuringWeb.Endpoint.broadcast_from!(
+        self(),
+        "user_#{player}",
+        "matched",
+        %{conversation_id: conversation_id}
+      )
 
-  def delete(%{"conversation_id" => conversation_id}) do
-    GenServer.call(Conversations, {:remove_entry, conversation_id})
-  end
-
-  def pop() do
-    GenServer.call(Conversations, :pop_entry)
-  end
-
-  def list() do
-    GenServer.call(Conversations, :get_all)
+      Presence.untrack(
+        self(),
+        "waiting_room",
+        player
+      )
+    end)
   end
 end

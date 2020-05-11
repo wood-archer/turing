@@ -9,6 +9,9 @@ defmodule Turing.Game do
   alias Turing.Accounts.User
   alias Turing.Chat.Conversation
   alias Turing.Game.Bid
+  alias Ecto.Multi
+  alias Turing.Utils.Constants
+  @default_signup_coin_account_balance Constants.default_signup_coin_account_balance()
 
   @doc """
   Returns the list of bids.
@@ -507,5 +510,38 @@ defmodule Turing.Game do
 
   def get_my_bid(%{"conversation_id" => conversation_id, "user_id" => user_id}) do
     Repo.get_by(Bid, %{conversation_id: conversation_id, user_id: user_id})
+  end
+
+  def reload_coin_account(coin_account, coins \\ @default_signup_coin_account_balance) do
+    with true <- coin_account.balance <= 0 do
+      reload_coin_account_transaction(coin_account, @default_signup_coin_account_balance)
+    else
+      _ -> false
+    end
+  end
+
+  def reload_coin_account_transaction(coin_account, coins \\ @default_signup_coin_account_balance) do
+    Multi.new()
+    |> Multi.update(
+      :update_coin_account,
+      CoinAccount.changeset(coin_account, %{balance: coin_account.balance + coins})
+    )
+    |> Multi.insert(
+      :add_coin_log,
+      CoinLog.changeset(%CoinLog{}, %{
+        user_id: coin_account.user_id,
+        coin_account_id: coin_account.id,
+        coins: coins,
+        notes: "RELOAD"
+      })
+    )
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{update_coin_account: coin_account}} ->
+        {:ok, coin_account}
+
+      {:error, _, reason, _changes_so_far} ->
+        {:error, reason}
+    end
   end
 end

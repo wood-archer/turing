@@ -20,6 +20,6 @@ defmodule Turing.Game.CoinLog do
   def changeset(coin_log, attrs) do
     coin_log
     |> cast(attrs, [:user_id, :coins, :coin_account_id, :bid_id, :notes])
-    |> validate_required([:user_id, :coins, :coin_account_id, :bid_id, :notes])
+    |> validate_required([:user_id, :coins, :coin_account_id, :notes])
   end
 end
