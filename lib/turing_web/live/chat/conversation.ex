@@ -63,7 +63,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   def handle_event(
-        "bet_on_robot",
+        "bet_on_bot",
         _params,
         %{
           assigns: %{
@@ -75,13 +75,13 @@ defmodule TuringWeb.Live.Chat.Conversation do
       self(),
       "user_#{user_id}",
       "play_view",
-      %{bet_on: "Robot", play_view: :bet_amount}
+      %{bet_on: "bot", play_view: :bet_amount}
     )
 
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
-     |> assign(bet_on: "Robot")}
+     |> assign(bet_on: "bot")}
   end
 
   def handle_event(
