@@ -441,7 +441,9 @@ defmodule Turing.Game do
   end
 
   def identify(player) do
-    if player.last_name, do: "HUMAN", else: "BOT"
+    # TODO change logic to correctly identify human/bot
+    # if player.last_name, do: "HUMAN", else: "BOT" 
+    "HUMAN"
   end
 
   def game_status_complete?(conversation_id) do
