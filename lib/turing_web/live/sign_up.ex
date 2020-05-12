@@ -6,6 +6,7 @@ defmodule TuringWeb.Live.SignUp do
 
   alias Turing.Accounts
   alias Turing.Accounts.User
+  alias TuringWeb.Router.Helpers, as: Routes
 
   def mount(_params, _session, socket) do
     {:ok, fetch(socket) |> assign(sign_up_view: :email_password_view)}
@@ -39,10 +40,10 @@ defmodule TuringWeb.Live.SignUp do
       {:ok, _user} ->
         {:noreply,
          socket
-         |> put_flash(:info, "User signed up successfull!")
-         |> assign(sign_up_view: :avatar_upload_view)}
+         # |> put_flash(:info, "User signed up successfull!")
+         # |> assign(sign_up_view: :avatar_upload_view)}
 
-      #  |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
+         |> redirect(to: Routes.session_path(TuringWeb.Endpoint, :sign_in))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
