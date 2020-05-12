@@ -80,17 +80,17 @@
         <!-- </div> -->
       </div>
          <%= f = form_for :message, "#", [phx_submit: "send_message", class: "chat-input"] %>
-         <div class="add-files">
-           <span>+</span>
-         </div>
+         <!-- <div class="add-files"> -->
+         <!--   <span>+</span> -->
+         <!-- </div> -->
         <%= text_input f, :content, [placeholder: "Type Your messaage"] %>
         <div class="imojis">
           <svg xmlns="http://www.w3.org/2000/svg" width="24.626" height="24.626" viewBox="0 0 24.626 24.626"><defs><style>.a{fill:#bdbfc6;}</style></defs><path class="a" d="M12.313,24.626A12.313,12.313,0,1,1,24.626,12.313,12.327,12.327,0,0,1,12.313,24.626Zm0-22.574A10.261,10.261,0,1,0,22.574,12.313,10.273,10.273,0,0,0,12.313,2.052Z" transform="translate(0)"/><circle class="a" cx="1.539" cy="1.539" r="1.539" transform="translate(7.381 7.996)"/><circle class="a" cx="1.539" cy="1.539" r="1.539" transform="translate(14.148 7.996)"/><path class="a" d="M12.157,19.135a7.2,7.2,0,0,1-6.21-3.593,1.026,1.026,0,1,1,1.775-1.029,5.113,5.113,0,0,0,8.869,0,1.025,1.025,0,1,1,1.774,1.029A7.2,7.2,0,0,1,12.157,19.135Z" transform="translate(0.156 0.362)"/></svg>
         </div>
-       <div class="drop-box">
-         <input type="file">
-         <span>Drop Your file Here </span>
-       </div>
+       <!-- <div class="drop-box"> -->
+       <!--   <input type="file"> -->
+       <!--   <span>Drop Your file Here </span> -->
+       <!-- </div> -->
         </form>
     </div>
   </div>
