@@ -14,7 +14,7 @@ alias Turing.Accounts.{Credential, User}
 alias Turing.Chat.{Conversation, ConversationMember}
 alias Turing.{Accounts, Chat, Game}
 
-{:ok, %User{id: u1_id}} = Accounts.create_user(%{first_name: "John", last_name: "Doe"})
+{:ok, %User{id: u1_id}} = Accounts.create_user(%{first_name: "John", last_name: "Doe", is_bot: true})
 
 {:ok, %Credential{}} =
   Accounts.create_credential(%{
@@ -25,7 +25,7 @@ alias Turing.{Accounts, Chat, Game}
     user_id: u1_id
   })
 
-{:ok, %User{id: u2_id}} = Accounts.create_user(%{first_name: "Jane", last_name: "Doe"})
+{:ok, %User{id: u2_id}} = Accounts.create_user(%{first_name: "Jane", last_name: "Doe", is_bot: true})
 
 {:ok, %Credential{}} =
   Accounts.create_credential(%{
