@@ -13,7 +13,8 @@ defmodule Turing.GameTest do
       last_name: "some last_name"
     }
     @valid_bot_user_attrs %{
-      first_name: "some first_name"
+      first_name: "some first_name",
+      is_bot: true
     }
 
     def user_fixture(attrs \\ %{}) do
@@ -352,27 +353,27 @@ defmodule Turing.GameTest do
       assert @default_balance + bid.coins == new_balance
     end
 
-    # test "place a bet & resolve - rightly guessing BOT" do
-    #   user_1 = user_setup_fixture()
-    #   user_2 = bot_user_setup_fixture()
+    test "place a bet & resolve - rightly guessing BOT" do
+      user_1 = user_setup_fixture()
+      user_2 = bot_user_setup_fixture()
 
-    #   {:ok, conversation} = Chat.build_conversation([user_1.id, user_2.id])
+      {:ok, conversation} = Chat.build_conversation([user_1.id, user_2.id])
 
-    #   attrs =
-    #     Map.merge(@valid_bid_attrs_bot, %{conversation_id: conversation.id, user_id: user_1.id})
-    #     |> Helper.build_string_map()
+      attrs =
+        Map.merge(@valid_bid_attrs_bot, %{conversation_id: conversation.id, user_id: user_1.id})
+        |> Helper.build_string_map()
 
-    #   {:ok, bid} = Game.make_bid(attrs)
-    #   {:ok, bid} = Game.resolve_bid(conversation.id, bid.id)
-    #   user_1 = user_1 |> Repo.preload([:coin_account])
-    #   new_balance = user_1.coin_account.balance
-    #   assert true == is_nil(user_2.last_name)
-    #   if user_2.last_name, do: "HUMAN", else: "BOT"
-    #   assert bid.coins == attrs["coins"]
-    #   assert bid.guess == attrs["guess"]
-    #   assert bid.result == "SUCCESS"
-    #   assert @default_balance + bid.coins == new_balance
-    # end
+      {:ok, bid} = Game.make_bid(attrs)
+      {:ok, bid} = Game.resolve_bid(conversation.id, bid.id)
+      user_1 = user_1 |> Repo.preload([:coin_account])
+      new_balance = user_1.coin_account.balance
+      assert true == is_nil(user_2.last_name)
+      if user_2.last_name, do: "HUMAN", else: "BOT"
+      assert bid.coins == attrs["coins"]
+      assert bid.guess == attrs["guess"]
+      assert bid.result == "SUCCESS"
+      assert @default_balance + bid.coins == new_balance
+    end
 
     test "place a bet & resolve - wrongly" do
       user_1 = user_setup_fixture()

@@ -5,7 +5,8 @@ defmodule Turing.Accounts.UserTest do
 
   @valid_attrs %{
     first_name: "some first_name",
-    last_name: "some last_name"
+    last_name: "some last_name",
+    is_bot: false
   }
 
   @invalid_attrs %{

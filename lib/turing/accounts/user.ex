@@ -17,7 +17,7 @@ defmodule Turing.Accounts.User do
   schema "users" do
     field(:first_name, :string)
     field(:last_name, :string)
-
+    field(:is_bot, :boolean, default: false)
     has_one(:credential, Credential, on_replace: :update)
     has_one(:coin_account, CoinAccount, on_replace: :update)
 
@@ -28,7 +28,7 @@ defmodule Turing.Accounts.User do
   end
 
   @required_fields ~w(first_name)a
-  @optional_fields ~w(last_name)a
+  @optional_fields ~w(last_name is_bot)a
 
   def changeset(%User{} = user, attrs) do
     user
