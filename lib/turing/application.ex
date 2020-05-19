@@ -5,6 +5,8 @@ defmodule Turing.Application do
 
   use Application
 
+  @registry :bots_registry
+
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
@@ -18,7 +20,9 @@ defmodule Turing.Application do
       TuringWeb.Presence,
       # Starts a worker by calling: Turing.Worker.start_link(arg)
       # {Turing.Worker, arg},
-      Turing.Chat.WaitingRoom
+      {Turing.Bot.Supervisor, []},
+      {Registry, [keys: :unique, name: @registry]},
+      TuringWeb.Chat.WaitingRoom
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

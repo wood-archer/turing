@@ -3,6 +3,7 @@ defmodule Turing.Accounts do
   Provides Accounts functions
   """
 
+  import Ecto.Query
   alias Turing.Accounts.{Credential, User}
   alias Turing.Game.CoinAccount
   alias Turing.Utils.Constants
@@ -52,4 +53,11 @@ defmodule Turing.Accounts do
   end
 
   def list_users, do: Repo.all(User)
+
+  def list_bot_users() do
+    (from u in User,
+      where: u.is_bot == true,
+      select: u.id)
+      |> Repo.all
+  end
 end

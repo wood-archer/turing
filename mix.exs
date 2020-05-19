@@ -42,6 +42,7 @@ defmodule Turing.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.1"},
+      {:poison, "~> 3.1"},
       {:plug_cowboy, "~> 2.0"},
       {:comeonin, "~> 5.2.0"},
       {:guardian, "~> 2.0"},
@@ -53,7 +54,8 @@ defmodule Turing.MixProject do
       {:absinthe_ecto, "~> 0.1.3"},
       {:phoenix_live_view, "~> 0.7.1"},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
-      {:sentry, "~> 7.0"}
+      {:sentry, "~> 7.0"},
+      {:virtuoso, "~> 0.0.29", git: "https://github.com/aplomb-tech/virtuoso"},
     ]
   end
 
