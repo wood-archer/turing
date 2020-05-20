@@ -440,7 +440,7 @@ defmodule Turing.Game do
     end
   end
 
-  def identify(player) do    
+  def identify(player) do
     if player.is_bot, do: "BOT", else: "HUMAN"
   end
 

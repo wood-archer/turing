@@ -55,9 +55,10 @@ defmodule Turing.Accounts do
   def list_users, do: Repo.all(User)
 
   def list_bot_users() do
-    (from u in User,
+    from(u in User,
       where: u.is_bot == true,
-      select: u.id)
-      |> Repo.all
+      select: u.id
+    )
+    |> Repo.all()
   end
 end

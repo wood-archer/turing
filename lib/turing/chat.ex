@@ -12,6 +12,7 @@ defmodule Turing.Chat do
   alias Turing.Chat.Emoji
   alias Turing.Chat.MessageReaction
   require Logger
+
   @doc """
   Returns the list of chat_conversations.
 
@@ -592,17 +593,19 @@ defmodule Turing.Chat do
   @doc """
     #1 Humans Match up #2 Human-Bot match up
   """
-  def match(humans, bots) when length(humans) > 1 do    
+  def match(humans, bots) when length(humans) > 1 do
     match_type = Enum.random(1..2)
+
     case match_type do
       1 -> {"humans", Enum.take_random(humans, 2)}
       2 -> {"mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
-    end    
-  end  
+    end
+  end
+
   @doc """
     #1 Humans Match up #2 Human-Bot match up
   """
   def match(humans, bots) do
     {"mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
-  end  
+  end
 end
