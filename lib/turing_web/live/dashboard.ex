@@ -68,11 +68,7 @@ defmodule TuringWeb.Live.Dashboard do
   def handle_event(
         "view_leaderboard",
         _params,
-        %{
-          assigns: %{
-            current_user: current_user
-          }
-        } = socket
+        socket
       ) do
     {:stop,
      socket

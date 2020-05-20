@@ -61,4 +61,8 @@ defmodule Turing.Accounts do
     )
     |> Repo.all()
   end
+
+  def get_preloaded_user(id) do
+    Repo.get(User, id) |> Repo.preload([:coin_account])
+  end
 end

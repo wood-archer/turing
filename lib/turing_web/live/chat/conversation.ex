@@ -2,9 +2,6 @@ defmodule TuringWeb.Live.Chat.Conversation do
   @moduledoc """
   Provides Conversation live functions
   """
-
-  require Logger
-
   use Phoenix.LiveView
   use Phoenix.HTML
 
@@ -155,8 +152,8 @@ defmodule TuringWeb.Live.Chat.Conversation do
 
         {:noreply, socket |> assign(:messages, updated_messages)}
 
-      {:error, err} ->
-        Logger.error(inspect(err))
+      {:error, _err} ->
+        {:noreply, socket}
     end
   end
 
@@ -246,19 +243,23 @@ defmodule TuringWeb.Live.Chat.Conversation do
         %{event: "bid_resolved", payload: payload},
         %{
           assigns: %{
-            user_id: user_id
+            user_id: user_id,
+            conversation_id: conversation_id
           }
         } = socket
       ) do
     cond do
       payload.bid.user_id == user_id && payload.bid.result == "SUCCESS" ->
+        TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
         {:noreply, socket |> assign(play_view: :won)}
 
       payload.bid.user_id == user_id && payload.bid.result == "FAILURE" ->
+        TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
         {:noreply, socket |> assign(play_view: :lost)}
 
       payload.bid.user_id != user_id && payload.bid.result == "SUCCESS" &&
           !payload.game_status_complete ->
+        TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
         {:noreply, socket |> assign(play_view: :lost)}
 
       payload.bid.user_id != user_id && payload.bid.result == "FAILURE" &&

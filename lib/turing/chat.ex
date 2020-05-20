@@ -593,19 +593,33 @@ defmodule Turing.Chat do
   @doc """
     #1 Humans Match up #2 Human-Bot match up
   """
-  def match(humans, bots) when length(humans) > 1 do
+  def match(humans, bots) when length(humans) > 1 and length(bots) >= 1 do
     match_type = Enum.random(1..2)
 
     case match_type do
-      1 -> {"humans", Enum.take_random(humans, 2)}
-      2 -> {"mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
+      1 -> {true, "humans", Enum.take_random(humans, 2)}
+      2 -> {true, "mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
     end
   end
 
   @doc """
-    #1 Humans Match up #2 Human-Bot match up
+    Human-Bot match up
   """
-  def match(humans, bots) do
-    {"mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
+  def match(humans, bots) when length(bots) >= 1 do
+    {true, "mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
+  end
+
+  @doc """
+    #1 Humans Match up
+  """
+  def match(humans, _bots) when length(humans) > 1 do
+    {true, "humans", Enum.take_random(humans, 2)}
+  end
+
+  @doc """
+    Wait for a match to enter WaitingRoom
+  """
+  def match(_humans, _bots) do
+    false
   end
 end

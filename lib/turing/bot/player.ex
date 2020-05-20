@@ -1,26 +1,35 @@
 defmodule Turing.Bot.Player do
   use GenServer
   alias Phoenix.Socket.{Broadcast}
-  alias Turing.{Accounts, Chat}
+  alias Turing.{Accounts, Chat, Game}
+  alias TuringWeb.Chat.WaitingRoom
+  @registry :bots_registry
   require Logger
 
   def start_link(user_id) do
-    GenServer.start_link(__MODULE__, user_id, name: user_id |> String.to_atom())
+    GenServer.start_link(__MODULE__, user_id, name: get_pid(user_id))
   end
 
   def init(user_id) do
-    Logger.info("state #{inspect(user_id)}")
+    bot_responder =
+      Virtuoso.Admin.Dashboard.list_bots()
+      |> Enum.random()
+      |> Map.get(:botname)
+      |> Atom.to_string()
 
-    # state = %{user_id: user_id, bot_responder: Virtuoso.Admin.Dashboard.list_bots() |> Map.keys() |> Enum.random() |> Atom.to_string}
-    state = %{user_id: user_id, bot_responder: "MementoMori"}
-    Logger.info("state #{inspect(state)}")
+    state = %{user_id: user_id, bot_responder: bot_responder}
     TuringWeb.Endpoint.subscribe("user_#{user_id}")
-
     {:ok, state}
   end
 
+  def handle_cast(:clean_up, %{user_id: user_id, conversation_id: conversation_id} = state) do
+    WaitingRoom.update_bot_status(user_id, "ready")
+    TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
+    new_state = Map.drop(state, [:conversation_id])
+    {:noreply, new_state}
+  end
+
   def handle_info(broadcast = %Broadcast{}, state) do
-    Logger.info("broadcast #{inspect(broadcast)}")
     user_event_clause = "user_#{state.user_id}"
 
     conversation_event_clause =
@@ -41,19 +50,35 @@ defmodule Turing.Bot.Player do
     {:noreply, state}
   end
 
-  # @doc """
-  #     Terminate a bot once conversation is over
-  # """
-  # @spec terminate(user_id()) :: :ok
-  # def terminate(user_id) do
-  #     GenServer.call(pid(sender_id), :terminate)
-  # end
+  def handle_info(:make_bid, state) do
+    state = make_bid(state)
+    {:noreply, state}
+  end
+
+  def handle_info({:resolve_game, payload}, %{conversation_id: conversation_id} = state) do
+    with {:ok, %Game.Bid{} = bid} <- Game.resolve_bid(conversation_id, payload.bid_id),
+         game_status_complete = Game.game_status_complete?(conversation_id) do
+      TuringWeb.Endpoint.broadcast_from!(
+        self(),
+        "conversation_#{conversation_id}",
+        "bid_resolved",
+        %{game_status_complete: game_status_complete, bid: bid}
+      )
+
+      clean_up_bot(state)
+      {:noreply, state}
+    else
+      _ ->
+        {:noreply, state}
+    end
+  end
 
   def user_events(broadcast, state) do
     case broadcast.event do
       "matched" ->
         conversation_id = broadcast.payload.conversation_id
         TuringWeb.Endpoint.subscribe("conversation_#{conversation_id}")
+        Process.send_after(self(), :make_bid, 15_000)
         Map.put(state, :conversation_id, conversation_id)
 
       _ ->
@@ -62,9 +87,6 @@ defmodule Turing.Bot.Player do
   end
 
   def conversation_events(broadcast, state) do
-    Logger.info("conversation_events broadcast #{inspect(broadcast)}")
-    Logger.info("state #{inspect(state)}")
-
     case broadcast.event do
       "new_message" ->
         broadcast.payload.content
@@ -73,20 +95,18 @@ defmodule Turing.Bot.Player do
         |> send_message(state)
 
       "bid_resolved" ->
-        state
+        if broadcast.payload.bid.result == "SUCCESS" do
+          clean_up_bot(state)
+        else
+          make_bid(state)
+        end
 
       _ ->
         state
     end
   end
 
-  def get_my_pid() do
-  end
-
   def build_virtuoso_param(new_message, state) do
-    Logger.info("new_message #{inspect(new_message)}")
-    Logger.info("state #{inspect(state)}")
-
     %{
       "object" => "",
       "entry" => %{
@@ -107,9 +127,7 @@ defmodule Turing.Bot.Player do
   end
 
   def send_message(message, %{conversation_id: conversation_id, user_id: user_id} = state) do
-    Logger.info("message #{inspect(message)}")
     content = message["message"]["text"]
-    Logger.info("content #{inspect(content)}")
 
     case Chat.create_message(%{
            conversation_id: conversation_id,
@@ -128,9 +146,38 @@ defmodule Turing.Bot.Player do
 
         state
 
-      {:error, err} ->
-        Logger.error("error #{inspect(err)}")
+      {:error, _err} ->
         state
     end
+  end
+
+  def make_bid(%{user_id: user_id, conversation_id: conversation_id} = state) do
+    user = Accounts.get_preloaded_user(user_id)
+    coins = Enum.random(1..user.coin_account.balance)
+    guess = Enum.random(["BOT", "HUMAN"])
+
+    case Game.make_bid(%{
+           "user_id" => user_id,
+           "conversation_id" => conversation_id,
+           "coins" => coins,
+           "guess" => guess
+         }) do
+      {:ok, bid} ->
+        send(self(), {:resolve_game, %{bid_id: bid.id}})
+
+      {:error, error} ->
+        {:error, error}
+    end
+
+    state
+  end
+
+  defp get_pid(sender_id) do
+    {:via, Registry, {@registry, sender_id}}
+  end
+
+  def clean_up_bot(state) do
+    GenServer.cast(get_pid(state.user_id), :clean_up)
+    state
   end
 end
