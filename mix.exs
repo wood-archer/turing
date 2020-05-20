@@ -52,7 +52,7 @@ defmodule Turing.MixProject do
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:absinthe_ecto, "~> 0.1.3"},
-      {:phoenix_live_view, "~> 0.11.1"},
+      {:phoenix_live_view, "~> 0.7.1", override: true},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
       {:sentry, "~> 7.0"},
       {:virtuoso, "~> 0.0.29", github: "anildigital/virtuoso", branch: "admin_dashboard_liveview"}

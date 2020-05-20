@@ -1,5 +1,5 @@
 defmodule Turing.Bot.Player do
-    
+
     use GenServer
     alias Phoenix.Socket.{Broadcast}
     alias Turing.{Accounts, Chat}
@@ -8,16 +8,17 @@ defmodule Turing.Bot.Player do
     def start_link(user_id) do
         GenServer.start_link(__MODULE__, user_id, name: user_id |> String.to_atom)
     end
-  
+
     def init(user_id) do
         Logger.info"state #{inspect user_id}"
-        state = %{user_id: user_id, bot_responder: Virtuoso.Admin.Dashboard.list_bots() |> Map.keys() |> Enum.random() |> Atom.to_string}
+        #state = %{user_id: user_id, bot_responder: Virtuoso.Admin.Dashboard.list_bots() |> Map.keys() |> Enum.random() |> Atom.to_string}
+        state = %{user_id: user_id, bot_responder: "MementoMori"}
         Logger.info"state #{inspect state}"
         TuringWeb.Endpoint.subscribe("user_#{user_id}")
 
         {:ok, state}
     end
-    
+
     def handle_info(broadcast = %Broadcast{}, state) do
         Logger.info"broadcast #{inspect broadcast}"
         user_event_clause = "user_#{state.user_id}"
@@ -26,7 +27,7 @@ defmodule Turing.Bot.Player do
             broadcast.topic == user_event_clause ->
                 user_events(broadcast, state)
             broadcast.topic == conversation_event_clause ->
-                conversation_events(broadcast, state)        
+                conversation_events(broadcast, state)
             true ->
                 state
         end
@@ -39,7 +40,7 @@ defmodule Turing.Bot.Player do
     # @spec terminate(user_id()) :: :ok
     # def terminate(user_id) do
     #     GenServer.call(pid(sender_id), :terminate)
-    # end    
+    # end
 
     def user_events(broadcast, state) do
         case broadcast.event do
@@ -68,7 +69,7 @@ defmodule Turing.Bot.Player do
     end
 
     def get_my_pid() do
-        
+
     end
 
     def build_virtuoso_param(new_message, state) do
@@ -111,7 +112,7 @@ defmodule Turing.Bot.Player do
            "new_message",
            new_message
          )
-        state 
+        state
        {:error, err} ->
         Logger.error"error #{inspect err}"
          state
