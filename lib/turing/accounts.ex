@@ -55,11 +55,16 @@ defmodule Turing.Accounts do
   def list_users, do: Repo.all(User)
 
   def list_bot_users() do
-    from(u in User,
-      where: u.is_bot == true,
-      select: u.id
-    )
-    |> Repo.all()
+    try do
+      from(u in User,
+        where: u.is_bot == true,
+        select: u.id
+      )
+      |> Repo.all()
+    rescue
+      _e ->
+        []
+    end
   end
 
   def get_preloaded_user(id) do
