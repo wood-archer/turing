@@ -78,7 +78,7 @@ defmodule Turing.Bot.Player do
       "matched" ->
         conversation_id = broadcast.payload.conversation_id
         TuringWeb.Endpoint.subscribe("conversation_#{conversation_id}")
-        Process.send_after(self(), :make_bid, 15_000)
+        Process.send_after(self(), :make_bid, 20_000)
         Map.put(state, :conversation_id, conversation_id)
 
       _ ->
