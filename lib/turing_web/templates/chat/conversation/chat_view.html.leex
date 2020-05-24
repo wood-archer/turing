@@ -34,24 +34,18 @@
        <%= for message <- @messages do %>
        <%= if (message.user.id == @user.id) do %>
          <div class="message-box sender">
-           <div class="chater">
-             ?
-           </div>
            <div class="chat-text">
              <div class="chat-user">
-               <h4><%= message.user.first_name %></h4>
+               <h4>You</h4>
              </div>
              <p><%= message.content %></p>
            </div>
          </div>
        <% else %>
          <div class="message-box receiver">
-           <div class="chater">
-             ?
-           </div>
            <div class="chat-text">
              <div class="chat-user">
-               <h4><%= message.user.first_name %></h4>
+               <h4>Opponent</h4>
              </div>
              <p><%= message.content %></p>
            </div>

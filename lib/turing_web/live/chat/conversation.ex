@@ -26,7 +26,8 @@ defmodule TuringWeb.Live.Chat.Conversation do
      |> assign(chat_right_pane_view: :navigate_to_choice_arrow)
      |> assign(play_view: :chat)
      |> assign(status: "BET")
-     |> assign(user_id: params["user_id"])}
+     |> assign(user_id: params["user_id"])
+     |> assign(opponent: nil)}
   end
 
   def render(assigns) do
@@ -212,7 +213,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
 
   def handle_info(
         {:resolve_game, payload},
-        %{assigns: %{conversation_id: conversation_id}} = socket
+        %{assigns: %{conversation_id: conversation_id, user_id: user_id}} = socket
       ) do
     Process.sleep(3000)
 
@@ -225,6 +226,8 @@ defmodule TuringWeb.Live.Chat.Conversation do
         %{game_status_complete: game_status_complete, bid: bid}
       )
 
+      opponent = Chat.get_opponent(conversation_id, user_id)
+
       result =
         case bid.result do
           "SUCCESS" -> :won
@@ -232,7 +235,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
           "TIE" -> :tie
         end
 
-      {:noreply, socket |> assign(play_view: result)}
+      {:noreply, socket |> assign(play_view: result) |> assign(opponent: opponent)}
     else
       _ ->
         {:noreply, socket}
@@ -248,19 +251,21 @@ defmodule TuringWeb.Live.Chat.Conversation do
           }
         } = socket
       ) do
+    opponent = Chat.get_opponent(conversation_id, user_id)
+
     cond do
       payload.bid.user_id == user_id && payload.bid.result == "SUCCESS" ->
         TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
-        {:noreply, socket |> assign(play_view: :won)}
+        {:noreply, socket |> assign(play_view: :won) |> assign(opponent: opponent)}
 
       payload.bid.user_id == user_id && payload.bid.result == "FAILURE" ->
         TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
-        {:noreply, socket |> assign(play_view: :lost)}
+        {:noreply, socket |> assign(play_view: :lost) |> assign(opponent: opponent)}
 
       payload.bid.user_id != user_id && payload.bid.result == "SUCCESS" &&
           !payload.game_status_complete ->
         TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
-        {:noreply, socket |> assign(play_view: :lost)}
+        {:noreply, socket |> assign(play_view: :lost) |> assign(opponent: opponent)}
 
       payload.bid.user_id != user_id && payload.bid.result == "FAILURE" &&
           !payload.game_status_complete ->

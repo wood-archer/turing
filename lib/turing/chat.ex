@@ -11,8 +11,9 @@ defmodule Turing.Chat do
   alias Turing.Chat.ConversationMember
   alias Turing.Chat.Emoji
   alias Turing.Chat.MessageReaction
+  alias Turing.Utils.Constants
   require Logger
-
+  @match_among_humans_probability Constants.match_among_humans_probability()
   @doc """
   Returns the list of chat_conversations.
 
@@ -593,33 +594,29 @@ defmodule Turing.Chat do
   @doc """
     #1 Humans Match up #2 Human-Bot match up
   """
-  def match(humans, bots) when length(humans) > 1 and length(bots) >= 1 do
-    match_type = Enum.random(1..2)
+  def match(humans, bots) when length(humans) >= 1 do
+    match_type = Enum.random(1..10)
+    can_match_humans = length(humans) >= 2
+    can_match_with_bots = !Enum.empty?(bots)
 
-    case match_type do
-      1 -> {true, "humans", Enum.take_random(humans, 2)}
-      2 -> {true, "mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
+    case {match_type <= @match_among_humans_probability, can_match_humans, can_match_with_bots} do
+      {true, true, _} ->
+        {true, "humans", Enum.take_random(humans, 2)}
+
+      {false, _, true} ->
+        {true, "mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
+
+      _ ->
+        false
     end
   end
 
-  @doc """
-    Human-Bot match up
-  """
-  def match(humans, bots) when length(bots) >= 1 do
-    {true, "mixed", Enum.take_random(humans, 1) ++ Enum.take_random(bots, 1)}
-  end
-
-  @doc """
-    #1 Humans Match up
-  """
-  def match(humans, _bots) when length(humans) > 1 do
-    {true, "humans", Enum.take_random(humans, 2)}
-  end
-
-  @doc """
-    Wait for a match to enter WaitingRoom
-  """
-  def match(_humans, _bots) do
+  def match(_, _) do
     false
+  end
+
+  def get_opponent(conversation_id, user_id) do
+    conversation = get_conversation!(conversation_id) |> Repo.preload([:users])
+    Enum.reject(conversation.users, fn user -> user.id == user_id end) |> hd()
   end
 end

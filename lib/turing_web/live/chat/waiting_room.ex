@@ -1,26 +1,27 @@
 defmodule TuringWeb.Chat.WaitingRoom do
   use GenServer
-  alias Phoenix.Socket.{Broadcast}
-  require Logger
+
   alias TuringWeb.Presence
   alias Turing.{Chat, Accounts}
+  alias Turing.Utils.Constants
   alias Turing.Bot.{Supervisor}
+
+  @number_of_bot_users Constants.number_of_bot_users()
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, Map.new(), name: __MODULE__)
   end
 
   def init(_state) do
-    TuringWeb.Endpoint.subscribe("waiting_room")
-
     state =
       Accounts.list_bot_users()
-      |> Enum.take_random(2)
+      |> Enum.take_random(@number_of_bot_users)
       |> Enum.reduce(%{}, fn user_id, acc ->
         pid = create_bot(user_id)
         Map.put(acc, user_id, %{pid: pid, status: "ready"})
       end)
 
+    Process.send_after(self(), :match, 10_000)
     {:ok, state}
   end
 
@@ -29,23 +30,19 @@ defmodule TuringWeb.Chat.WaitingRoom do
     pid
   end
 
-  def handle_info(broadcast = %Broadcast{}, state) do
-    with event when event in ["presence_diff"] <-
-           broadcast.event,
-         true <- broadcast.topic == "waiting_room",
-         true <- map_size(broadcast.payload.joins) > 0,
-         users = Presence.list("waiting_room") |> Map.keys(),
-         {true, match_type, players} <- Chat.match(users, get_ready_bots(state)),
-         {:ok, %Chat.Conversation{} = conversation} <- Chat.build_conversation(players) do
-      new_state = manage_players(players, conversation.id, match_type, state)
-      {:noreply, new_state}
-    else
-      false ->
-        {:noreply, state}
+  def handle_info(:match, state) do
+    state =
+      with users = Presence.list("waiting_room") |> Map.keys(),
+           {true, match_type, players} <- Chat.match(users, get_ready_bots(state)),
+           {:ok, %Chat.Conversation{} = conversation} <- Chat.build_conversation(players) do
+        manage_players(players, conversation.id, match_type, state)
+      else
+        false ->
+          state
+      end
 
-      _ ->
-        {:noreply, state}
-    end
+    Process.send_after(self(), :match, 5_000)
+    {:noreply, state}
   end
 
   def handle_call({:lookup, user_id}, _from, state) do

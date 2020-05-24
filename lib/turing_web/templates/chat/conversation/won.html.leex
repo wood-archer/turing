@@ -11,8 +11,24 @@
             <div class="match-header">
                 <div class="main-content match-content">
                     <emoji style="font-size:250px;display:block;">😃</emoji>
+                    <div class="main-right">
+                        <div class="right">
+                            <div class="logo">
+                                <%= if @opponent.is_bot do %>
+                                    <img src="/images/robot_small.png" alt="">
+                                <% else %>
+                                    <img src="/images/boy.svg" alt="">
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
-                <h3>WON</h3>
+                <h3>YOU WON</h3>
+                <%= if @opponent.is_bot do %>
+                    <span style="font-size:18px;color:white;">Your opponent is <%= Enum.join([@opponent.first_name, @opponent.last_name], " ") %> and it's a BOT.</span>
+                <% else %>
+                    <span style="font-size:18px;color:white;">Your opponent is <%= Enum.join([@opponent.first_name, @opponent.last_name], " ") %> and it's a HUMAN.</span>
+                <% end %>                
                 <div class="social-feed" style="left: unset;bottom: 0; top: unset;right: 0;">
                     <ul>
                         <li style="background-color:#2867A1"></li>
