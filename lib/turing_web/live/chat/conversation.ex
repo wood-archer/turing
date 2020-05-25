@@ -40,6 +40,25 @@ defmodule TuringWeb.Live.Chat.Conversation do
   end
 
   def handle_event(
+        "exit_game",
+        _params,
+        %{
+          assigns: %{
+            user_id: user_id,
+            conversation_id: conversation_id
+          }
+        } = socket
+      ) do
+    Presence.untrack(
+      self(),
+      "conversation_#{conversation_id}",
+      user_id
+    )
+
+    {:stop, socket |> redirect(to: Routes.page_path(TuringWeb.Endpoint, :index))}
+  end
+
+  def handle_event(
         "bet_on_human",
         _params,
         %{

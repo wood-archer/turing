@@ -754,13 +754,19 @@ form {
           display: block;
           font-size: 13px; }
     .chat-screen-main .right .close-btn {
-      visibility: hidden;
-      height: 0px;
-      width: 0px;
       position: absolute;
       top: 10px;
       right: 10px;
       padding: 6px; }
+      .chat-screen-main .right .close-btn button{
+        transition: .5s all;
+        cursor: pointer;
+        width: 67px;
+        height: 67px;
+        background-color:#358ada;
+        border-radius: 100%;
+        border: none;
+        margin: 10px 0px; }      
     .chat-screen-main .right.active {
       max-width: 30%;
       width: 100%;
