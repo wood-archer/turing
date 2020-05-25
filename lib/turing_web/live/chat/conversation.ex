@@ -27,7 +27,8 @@ defmodule TuringWeb.Live.Chat.Conversation do
      |> assign(play_view: :chat)
      |> assign(status: "BET")
      |> assign(user_id: params["user_id"])
-     |> assign(opponent: nil)}
+     |> assign(opponent: nil)
+     |> assign(bid_amount: nil)}
   end
 
   def render(assigns) do
@@ -235,7 +236,11 @@ defmodule TuringWeb.Live.Chat.Conversation do
           "TIE" -> :tie
         end
 
-      {:noreply, socket |> assign(play_view: result) |> assign(opponent: opponent)}
+      {:noreply,
+       socket
+       |> assign(play_view: result)
+       |> assign(opponent: opponent)
+       |> assign(bid_amount: bid.coins)}
     else
       _ ->
         {:noreply, socket}
@@ -256,7 +261,12 @@ defmodule TuringWeb.Live.Chat.Conversation do
     cond do
       payload.bid.user_id == user_id && payload.bid.result == "SUCCESS" ->
         TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")
-        {:noreply, socket |> assign(play_view: :won) |> assign(opponent: opponent)}
+
+        {:noreply,
+         socket
+         |> assign(play_view: :won)
+         |> assign(opponent: opponent)
+         |> assign(bid_amount: payload.bid.coins)}
 
       payload.bid.user_id == user_id && payload.bid.result == "FAILURE" ->
         TuringWeb.Endpoint.unsubscribe("conversation_#{conversation_id}")

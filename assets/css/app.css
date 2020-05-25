@@ -846,7 +846,15 @@ form {
 }
 .match-home .matching .match-header h3 {
   color: #ffffff;
+  text-align: center;
   padding: 7px;
+}
+.match-home .matching .match-header .result h3{
+  color: gold;
+}
+.match-home .matching .match-header .result h2{
+  color: gold;
+  text-align: center;
 }
 .match-home .matching .match-content {
   margin-top: 40px;

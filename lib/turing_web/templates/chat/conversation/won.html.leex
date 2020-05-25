@@ -23,7 +23,11 @@
                         </div>
                     </div>                    
                 </div>
-                <h3>YOU WON</h3>
+                <div class="result">
+                    <h3>Congratulations! </br>You have won</h3>
+                    <h2><%= @bid_amount%></h2>
+                    <h3>Points</h3>
+                </div>
                 <%= if @opponent.is_bot do %>
                     <span style="font-size:18px;color:white;">Your opponent is <%= Enum.join([@opponent.first_name, @opponent.last_name], " ") %> and it's a BOT.</span>
                 <% else %>
