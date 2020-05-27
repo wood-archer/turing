@@ -51,7 +51,10 @@ defmodule Turing.Bot.Player do
   end
 
   def handle_info(:make_bid, state) do
-    state = make_bid(state)
+    if Map.has_key?(state, :conversation_id) do
+      state = make_bid(state)
+    end
+
     {:noreply, state}
   end
 
@@ -128,6 +131,7 @@ defmodule Turing.Bot.Player do
 
   def send_message(message, %{conversation_id: conversation_id, user_id: user_id} = state) do
     content = message["message"]["text"]
+    Process.sleep(3000)
 
     case Chat.create_message(%{
            conversation_id: conversation_id,

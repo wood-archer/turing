@@ -51,12 +51,28 @@
                         <% end %>
                 </div>
             </div>
-            <div class="footer-right">
-                <div class="btn-larg">
                         <%= cond do %>
                         <% @status == "BET" -> %>
-                            <button phx-click="place_bet" phx-value-coins=2000>PLACE BET
+                        <%= f = form_for :bet, "#", [phx_submit: "place_bet", class: "place_bet_form"] %>
+
+            <div class="bet-amount-container">
+                <%= for option <- @bet_range do %>
+                    <div class="bet-amount-section">
+                    <%= label f, :bet_amount, elem(option, 1),for: input_id(f, :bet_amount, elem(option, 0)) %>
+                    <%= radio_button f, :bet_amount, elem(option, 0), checked: elem(option, 2) == 1 %>
+                    </div>
+                <% end %>
+            </div>
+            <div class="footer-right" style="width: 25%">
+                <div class="btn-larg">
+                            <%= submit do %>PLACE BET
+                            <% end %>
+                            </form>
+                </div>
+            </div>                            
                         <% true -> %>
+            <div class="footer-right">
+                <div class="btn-larg">                        
                             <div class="loader">
                                 <div class="loader-text">RESOLVING</div>
                                     <span></span>
@@ -64,18 +80,9 @@
                                     <span></span>
                                 </div>
                             </div>
-                        <% end %>
-                    &nbsp;<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                        viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
-                   <g>
-                       <g>
-                           <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333
-                               341.333,170.667 		"/>
-                       </g>
-                   </g>
-                   </svg>
-                    </button>
                 </div>
-            </div>
+            </div>                            
+                        <% end %>                    
+
         </div>
     </section>

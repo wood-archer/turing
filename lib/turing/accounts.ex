@@ -70,4 +70,16 @@ defmodule Turing.Accounts do
   def get_preloaded_user(id) do
     Repo.get(User, id) |> Repo.preload([:coin_account])
   end
+
+  def get_bet_amount_range(id) do
+    user = get_preloaded_user(id)
+    balance = user.coin_account.balance
+
+    [0.1, 0.2, 0.5]
+    |> Enum.with_index()
+    |> Enum.map(fn {bet_percent, i} ->
+      bet_amount = (balance * bet_percent) |> trunc
+      {bet_amount, "#{bet_amount} Points", i}
+    end)
+  end
 end

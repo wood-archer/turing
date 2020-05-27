@@ -28,7 +28,8 @@ defmodule TuringWeb.Live.Chat.Conversation do
      |> assign(status: "BET")
      |> assign(user_id: params["user_id"])
      |> assign(opponent: nil)
-     |> assign(bid_amount: nil)}
+     |> assign(bid_amount: nil)
+     |> assign(bet_range: [])}
   end
 
   def render(assigns) do
@@ -74,10 +75,13 @@ defmodule TuringWeb.Live.Chat.Conversation do
       %{bet_on: "Human", play_view: :bet_amount}
     )
 
+    bet_range = Accounts.get_bet_amount_range(user_id)
+
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
-     |> assign(bet_on: "Human")}
+     |> assign(bet_on: "Human")
+     |> assign(bet_range: bet_range)}
   end
 
   def handle_event(
@@ -96,15 +100,22 @@ defmodule TuringWeb.Live.Chat.Conversation do
       %{bet_on: "bot", play_view: :bet_amount}
     )
 
+    bet_range = Accounts.get_bet_amount_range(user_id)
+
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
-     |> assign(bet_on: "bot")}
+     |> assign(bet_on: "bot")
+     |> assign(bet_range: bet_range)}
   end
 
   def handle_event(
         "place_bet",
-        %{"coins" => coins} = _params,
+        %{
+          "bet" => %{
+            "bet_amount" => coins
+          }
+        } = _params,
         %{
           assigns: %{
             conversation_id: conversation_id,
@@ -220,11 +231,17 @@ defmodule TuringWeb.Live.Chat.Conversation do
     {:noreply, socket |> assign(:messages, updated_messages)}
   end
 
-  def handle_info(%{event: "play_view", payload: payload}, socket) do
+  def handle_info(
+        %{event: "play_view", payload: payload},
+        %{assigns: %{user_id: user_id}} = socket
+      ) do
+    bet_range = Accounts.get_bet_amount_range(user_id)
+
     {:noreply,
      socket
      |> assign(play_view: payload.play_view)
-     |> assign(bet_on: payload.bet_on)}
+     |> assign(bet_on: payload.bet_on)
+     |> assign(bet_range: bet_range)}
   end
 
   def handle_info(%{event: "game_status", payload: payload}, socket) do

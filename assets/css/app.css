@@ -996,3 +996,33 @@ form {
   border-style: inherit;
   cursor: pointer;
 }
+
+.place_bet_form {
+  display: contents;
+}
+
+.bet-amount-container {
+  display: flow-root;
+  width: 50%;
+}
+.bet-amount-container input{
+  padding-top: 5px;
+  height: 2.5em;
+  width: 10%;
+}
+
+.bet-amount-container label{
+  border: 1px solid goldenrod;
+  font-size: x-large;
+  border-radius: 10px;
+  padding: 5px 25px;
+  color: white;
+  background: goldenrod;
+  width: 300px;
+  font-weight: bolder;
+}
+
+.bet-amount-section {
+  display: flex;
+  padding: 5px;
+}
