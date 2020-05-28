@@ -34,22 +34,22 @@ defmodule TuringWeb.Router do
   end
 
   scope "/", TuringWeb do
-    pipe_through :browser
-
-    get "/", SessionController, :sign_in
-    get "/sign_up", UserController, :sign_up
-  end
-
-  scope "/", TuringWeb do
     pipe_through [:browser, :authorized]
 
-    get "/me", PageController, :index
+    get "/", PageController, :index
 
     live "/chat/conversations/:conversation_id/users/:user_id", Live.Chat.Conversation, as: :chat
     live "/leaderboard", Live.Leaderboard, as: :leaderboard
 
     delete "/sign_in", SessionController, :sign_out
   end
+
+  scope "/", TuringWeb do
+    pipe_through :browser
+
+    get "/sign_in", SessionController, :sign_in
+    get "/sign_up", UserController, :sign_up
+  end  
 
   if Mix.env() == :dev do
     scope "/graphiql" do
