@@ -49,7 +49,7 @@ defmodule TuringWeb.Router do
 
     get "/sign_in", SessionController, :sign_in
     get "/sign_up", UserController, :sign_up
-  end  
+  end
 
   if Mix.env() == :dev do
     scope "/graphiql" do
