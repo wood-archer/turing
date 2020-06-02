@@ -21,7 +21,7 @@ defmodule TuringWeb.Chat.WaitingRoom do
         Map.put(acc, user_id, %{pid: pid, status: "ready"})
       end)
 
-    Process.send_after(self(), :match, 2_000)
+    Process.send_after(self(), :match, 5_000)
     {:ok, state}
   end
 
