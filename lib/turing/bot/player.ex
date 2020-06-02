@@ -58,6 +58,18 @@ defmodule Turing.Bot.Player do
     {:noreply, state}
   end
 
+  def handle_info({:send_message, data}, state) do
+    case String.contains?(data[:message], "ParlAI") do
+      true ->
+        {:noreply, state}
+
+      false ->
+        message = %{"message" => %{"text" => data[:message]}}
+        send_message(message, data)
+        {:noreply, state}
+    end
+  end
+
   def handle_info({:resolve_game, payload}, %{conversation_id: conversation_id} = state) do
     with {:ok, %Game.Bid{} = bid} <- Game.resolve_bid(conversation_id, payload.bid_id),
          game_status_complete = Game.game_status_complete?(conversation_id) do
@@ -81,8 +93,26 @@ defmodule Turing.Bot.Player do
       "matched" ->
         conversation_id = broadcast.payload.conversation_id
         TuringWeb.Endpoint.subscribe("conversation_#{conversation_id}")
-        Process.send_after(self(), :make_bid, 20_000)
-        Map.put(state, :conversation_id, conversation_id)
+        Process.send_after(self(), :make_bid, 30_000)
+        state = Map.put(state, :conversation_id, conversation_id)
+        state = Map.put(state, :sender, self())
+
+        {:ok, parlai_pid} = Parlai.Client.start_link(state)
+
+        Parlai.Client.send_message(
+          parlai_pid,
+          Jason.encode!(%{text: "start"}),
+          state
+        )
+
+        Parlai.Client.send_message(
+          parlai_pid,
+          Jason.encode!(%{text: "begin"}),
+          state
+        )
+
+        state = Map.put(state, :parlai_pid, parlai_pid)
+        state
 
       _ ->
         state
@@ -92,10 +122,18 @@ defmodule Turing.Bot.Player do
   def conversation_events(broadcast, state) do
     case broadcast.event do
       "new_message" ->
-        broadcast.payload.content
-        |> build_virtuoso_param(state)
-        |> Virtuoso.handle()
-        |> send_message(state)
+        parlai_pid = state[:parlai_pid]
+
+        Parlai.Client.send_message(
+          parlai_pid,
+          Jason.encode!(%{text: broadcast.payload.content}),
+          state
+        )
+
+      # broadcast.payload.content
+      # |> build_virtuoso_param(state)
+      # |> Virtuoso.handle()
+      # |> send_message(state)
 
       "bid_resolved" ->
         if broadcast.payload.bid.result == "SUCCESS" do

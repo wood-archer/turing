@@ -55,6 +55,7 @@ defmodule Turing.MixProject do
       {:phoenix_live_view, "~> 0.7.1", override: true},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
       {:sentry, "~> 7.0"},
+      {:websockex, "~> 0.4.2"},
       {:virtuoso, "~> 0.0.29", github: "anildigital/virtuoso", branch: "admin_dashboard_liveview"}
     ]
   end
