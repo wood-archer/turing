@@ -6,7 +6,7 @@ defmodule Turing.Accounts.User do
   use Ecto.Schema
 
   import Ecto.Changeset
-
+  alias Turing.Repo
   alias __MODULE__
   alias Turing.Accounts.Credential
   alias Turing.Chat.ConversationMember
@@ -44,6 +44,7 @@ defmodule Turing.Accounts.User do
 
   def changeset_for_update(%User{} = user, attrs) do
     user
+    |> Repo.preload([:credential])
     |> changeset(attrs)
     |> validate_required(@required_fields)
   end

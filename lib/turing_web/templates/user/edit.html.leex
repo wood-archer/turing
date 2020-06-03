@@ -1,0 +1,109 @@
+<div class="edit-screen-main">
+<div class="left">
+      <div class="btn-org signin" style="padding: 25px;">
+        <button phx-click="navigate_to_dashboard">
+          <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            viewBox="0 0 341.333 341.333" style="enable-background:new 0 0 341.333 341.333;" xml:space="preserve">
+            <g>
+                <g>
+                    <polygon points="170.667,0 140.48,30.187 259.627,149.333 0,149.333 0,192 259.627,192 140.48,311.147 170.667,341.333
+                        341.333,170.667 		"/>
+                </g>
+            </g>
+          </svg>
+        </button>
+      </div>
+</div>
+
+<div class="right">
+<div class="right-content">
+<div class="box"> 
+<%= if @type == "PROFILE" do %>
+<h3>EDIT PROFILE</h3>
+<%= f = form_for @changeset,
+    "#",
+    [
+      phx_change: :validate_user,
+      phx_submit: :update
+    ]
+  %>
+
+  <div class="double-input">
+  <div class="input">
+    <%= label f, :first_name, class: "control-label" %>
+    <%= text_input f, :first_name, class: "form-control" %>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="input">
+    <%= label f, :last_name, class: "control-label" %>
+    <%= text_input f, :last_name, class: "form-control" %>
+  </div>
+  </div>
+  
+  <%= inputs_for f, :credential, fn c -> %>
+
+      <div class="single-input">
+        <div class="input">
+          <%= label c, :email %>
+          <%= text_input c, :email %>
+          <%= error_tag c, :email %>
+        </div>
+      </div>
+
+    <% end %>  
+
+  <div class="btn-med">
+    <%= submit phx_disable_with: "Loading ..."  do %>
+    <span style="font-size: 20px;">Edit</span>
+    <% end %>
+  <button phx-click="sign_out" style="background-color: #e19034">
+    <span style="font-size: 20px;">Logout</span>
+  </button>
+  </div>
+  <button phx-click="change_password"  class="plain-button">
+    <span>CHANGE PASSWORD</span>
+  </button>
+</form>
+
+<% else %>
+<h3>CHANGE PASSWORD</h3>
+<%= c = form_for @credential_changeset,
+    "#",
+    [
+      phx_change: :validate_credentials,
+      phx_submit: :update
+    ]
+  %>
+  
+      <div class="single-input">
+        <div class="input">
+          <%= label c, :password %>
+          <%= live_view_password_input c, :password %>
+          <%= error_tag c, :password %>
+        </div>
+      </div>
+
+      <div class="single-input">
+        <div class="input">
+          <%= label c, :password_confirmation %>
+          <%= live_view_password_input c, :password_confirmation %>
+          <%= error_tag c, :password_confirmation %>
+        </div>
+      </div>
+
+  <div class="btn-med">
+    <%= submit phx_disable_with: "Loading ..."  do %>
+    <span style="font-size: 20px;">Save</span>
+    <% end %>
+  </div>
+
+</form>
+    <button phx-click="change_profile" class="plain-button">
+    <span>UPDATE PROFILE</span>
+  </button>
+<% end %>
+</div>
+</div>
+</div>
+</div>

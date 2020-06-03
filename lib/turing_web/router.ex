@@ -40,7 +40,7 @@ defmodule TuringWeb.Router do
 
     live "/chat/conversations/:conversation_id/users/:user_id", Live.Chat.Conversation, as: :chat
     live "/leaderboard", Live.Leaderboard, as: :leaderboard
-
+    live "/profile/edit", Live.Accounts.User, as: :user
     delete "/sign_in", SessionController, :sign_out
   end
 

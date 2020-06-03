@@ -81,6 +81,27 @@ defmodule TuringWeb.Live.Dashboard do
      )}
   end
 
+  def handle_event(
+        "edit_profile",
+        _params,
+        %{
+          assigns: %{
+            current_user: current_user
+          }
+        } = socket
+      ) do
+    {:stop,
+     socket
+     |> redirect(
+       to:
+         Routes.user_path(
+           TuringWeb.Endpoint,
+           TuringWeb.Live.Accounts.User,
+           %{user_id: current_user}
+         )
+     )}
+  end
+
   def handle_info(
         %{event: "matched", payload: payload},
         %{

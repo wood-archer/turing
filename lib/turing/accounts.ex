@@ -15,8 +15,16 @@ defmodule Turing.Accounts do
     Credential.changeset_for_session(credential, attrs)
   end
 
+  def change_credential_update(%Credential{} = credential, attrs \\ %{}) do
+    Credential.changeset_for_update(credential, attrs)
+  end
+
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset_for_create(user, attrs)
+  end
+
+  def change_user_for_update(%User{} = user, attrs \\ %{}) do
+    User.changeset_for_update(user, attrs)
   end
 
   def get_user!(id), do: Repo.get(User, id)
@@ -81,5 +89,17 @@ defmodule Turing.Accounts do
       bet_amount = (balance * bet_percent) |> trunc
       {bet_amount, "#{bet_amount} Points", i}
     end)
+  end
+
+  def update_user(%User{} = user, attrs \\ %{}) do
+    user
+    |> User.changeset_for_update(attrs)
+    |> Repo.update()
+  end
+
+  def update_crendential(%Credential{} = credential, attrs \\ %{}) do
+    credential
+    |> Credential.changeset_for_update(attrs)
+    |> Repo.update()
   end
 end

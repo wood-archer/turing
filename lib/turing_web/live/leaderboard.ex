@@ -41,7 +41,7 @@ defmodule TuringWeb.Live.Leaderboard do
     """
   end
 
-  def mount(params, _assigns, socket) do
+  def mount(_params, _assigns, socket) do
     users =
       from(u in User,
         join: ca in assoc(u, :coin_account),

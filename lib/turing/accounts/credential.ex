@@ -75,5 +75,8 @@ defmodule Turing.Accounts.Credential do
   defp hash_password(%Ecto.Changeset{valid?: true, changes: %{email: _email}} = changeset),
     do: changeset
 
+  defp hash_password(%Ecto.Changeset{valid?: true, changes: %{}} = changeset),
+    do: changeset
+
   defp hash_password(%Ecto.Changeset{valid?: false} = changeset), do: changeset
 end

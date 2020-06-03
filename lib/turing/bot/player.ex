@@ -51,9 +51,12 @@ defmodule Turing.Bot.Player do
   end
 
   def handle_info(:make_bid, state) do
-    if Map.has_key?(state, :conversation_id) do
-      state = make_bid(state)
-    end
+    state =
+      if Map.has_key?(state, :conversation_id) do
+        make_bid(state)
+      else
+        state
+      end
 
     {:noreply, state}
   end
