@@ -76,12 +76,21 @@ defmodule TuringWeb.Live.Chat.Conversation do
     )
 
     bet_range = Accounts.get_bet_amount_range(user_id)
+    bid_amount = Enum.at(bet_range, 1)
 
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
      |> assign(bet_on: "Human")
-     |> assign(bet_range: bet_range)}
+     |> assign(bet_range: bet_range)
+     |> assign(bid_amount: bid_amount)
+     |> assign(bet_amount: bid_amount)}
+  end
+
+  def handle_event("update_bet", %{"bet_amount" => bet_amount}, socket) do
+    bet_amount = String.to_integer(bet_amount)
+    socket = assign(socket, bid_amount: bet_amount)
+    {:noreply, socket}
   end
 
   def handle_event(
@@ -101,21 +110,20 @@ defmodule TuringWeb.Live.Chat.Conversation do
     )
 
     bet_range = Accounts.get_bet_amount_range(user_id)
+    bid_amount = Enum.at(bet_range, 1)
 
     {:noreply,
      socket
      |> assign(play_view: :bet_amount)
      |> assign(bet_on: "bot")
-     |> assign(bet_range: bet_range)}
+     |> assign(bet_range: bet_range)
+     |> assign(bid_amount: bid_amount)
+     |> assign(bet_amount: bid_amount)}
   end
 
   def handle_event(
         "place_bet",
-        %{
-          "bet" => %{
-            "bet_amount" => coins
-          }
-        } = _params,
+        %{"bet_amount" => bet_amount} = params,
         %{
           assigns: %{
             conversation_id: conversation_id,
@@ -127,7 +135,7 @@ defmodule TuringWeb.Live.Chat.Conversation do
     case Game.make_bid(%{
            "user_id" => user_id,
            "conversation_id" => conversation_id,
-           "coins" => String.to_integer(coins),
+           "coins" => String.to_integer(bet_amount),
            "guess" => String.upcase(bet_on)
          }) do
       {:ok, bid} ->

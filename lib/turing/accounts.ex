@@ -87,7 +87,7 @@ defmodule Turing.Accounts do
     |> Enum.with_index()
     |> Enum.map(fn {bet_percent, i} ->
       bet_amount = (balance * bet_percent) |> trunc
-      {bet_amount, "#{bet_amount} Points", i}
+      bet_amount
     end)
   end
 

@@ -483,12 +483,24 @@ form {
   .footer-home .footer-box {
     display: flex;
     align-items: center; }
+    .bet-footer {
+      width: 10% !important;
+    }
     .footer-home .footer-box .footer-left,
     .footer-home .footer-box .footer-right {
       padding: 0px 50px;
       width: 50%;
       display: flex;
       align-items: center; }
+      .slider-box {
+        height: 160px;
+        width: 85%;
+        border: 1px solid;
+        margin-top: -14%;
+        background: #2867A1;
+        z-index: 1000;
+        border-radius: 10px;
+      }
       .footer-home .footer-box .footer-left .header-feed,
       .footer-home .footer-box .footer-right .header-feed {
         border-radius: 100%;
@@ -766,7 +778,7 @@ form {
         background-color:#358ada;
         border-radius: 100%;
         border: none;
-        margin: 10px 0px; }      
+        margin: 10px 0px; }
     .chat-screen-main .right.active {
       max-width: 30%;
       width: 100%;
@@ -1002,13 +1014,76 @@ form {
 }
 
 .bet-amount-container {
-  display: flow-root;
+  display: inline-block;
   width: 50%;
 }
 .bet-amount-container input{
-  padding-top: 5px;
-  height: 2.5em;
-  width: 10%;
+  width: 100%;
+  margin-left: 10%;
+  margin-top: 10%;
+}
+
+input[type="range"] {
+ -webkit-appearance: none;
+}
+
+input[type="range"]:focus {
+ outline: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+ background: #3877B2;
+ height: 2px;
+}
+
+input[type="range"]::-moz-range-track {
+ background: #3877B2;
+ height: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+ -webkit-appearance: none;
+ height: 25px;
+ width: 25px;
+ background: white;
+ margin-top: -10px;
+ border-radius: 50%;
+}
+
+::-ms-fill-lower {
+  background: white;
+}
+
+input[type="range"]::-moz-range-thumb {
+ height: 25px;
+ width: 25px;
+ background: pink;
+ margin-top: -10px;
+ border-radius: 50%;
+}
+
+.bet-point-mention {
+  width: 20%;
+  border: 1px solid;
+  height: 130%;
+  background: #E19039;
+  margin-left: 6%;
+  margin-top: -4%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: inline-block;
+}
+.bet-point {
+    color: #FFFEFC;
+    padding-top: 10%;
+    padding-left: 21%;
+}
+.bid-amount {
+  padding-top: 5%;
+  padding-bottom: 5%;
+  padding-left: 15%;
+  font-size: 250%;
+  font-weight: 800;
 }
 
 .bet-amount-container label{
@@ -1050,14 +1125,14 @@ form {
         margin: 40px;
         padding: 50px;
         width: 100%;
-        max-width: 533px; 
+        max-width: 533px;
         float: right;
         box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.09);
         background-color: #ffffff;}
-  
+
 .double-input {
   width: 100%;
-  margin-top: 20px; 
+  margin-top: 20px;
   display: flex;}
   .double-input .input {
     width: 50%;
@@ -1096,7 +1171,7 @@ form {
       width: 19px;
       height: 17px;
       fill: #ffffffff;
-      border: none; }      
+      border: none; }
 
 .plain-button{
   -webkit-appearance: none;
@@ -1106,7 +1181,7 @@ form {
   width: 100%;
   padding-top: 15px;
   transition: .5s all;
-  cursor: pointer;}      
+  cursor: pointer;}
   .plain-button span {
     display: block;
     margin: 10px 0px;
