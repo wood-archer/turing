@@ -4,7 +4,7 @@ defmodule Parlai.Client do
 
   def start_link(state) do
     WebSockex.start_link(
-      "ws://167.172.204.106:10001/websocket",
+      "ws://3.86.221.116:10001/websocket",
       __MODULE__,
       state,
       []
